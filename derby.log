@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Thu Aug 07 10:29:55 CET 2014:
+Amorçage de Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872) : instance a816c00e-0147-afcd-a435-0000049066b0 
+dans le répertoire de base de données /home/moez/NetBeansProjects/PlaylistRadio6/base  avec le chargeur de classe sun.misc.Launcher$AppClassLoader@55c4d594
+
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_60-b19
+user.dir=/home/moez/NetBeansProjects/PlaylistRadio6
+derby.system.home=null
+Chargeur de classe de la base de données démarré - derby.database.classpath=''
