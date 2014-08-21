@@ -11,17 +11,17 @@ import CrudPanels.Chanson;
  *
  * @author moez
  */
-public class ThemeCriteria implements FilterCriteria {
+public class NomChansonCriteria implements FilterCriteria {
 
-    private String theme;
+    String nomChanson;
 
-    public ThemeCriteria(String theme) {
-        this.theme = theme;
+    public NomChansonCriteria(String nomChanson) {
+        this.nomChanson = nomChanson;
     }
 
     @Override
     public boolean passes(Chanson o) {
-        return ((Chanson) o).getNomTheme().equals(theme);
+        return ((Chanson) o).getNomChanson().equals(nomChanson);
     }
 
 }

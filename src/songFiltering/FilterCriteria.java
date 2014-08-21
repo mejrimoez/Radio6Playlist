@@ -5,11 +5,13 @@
  */
 package songFiltering;
 
+import CrudPanels.Chanson;
+
 /**
  *
  * @author moez
  */
 public interface FilterCriteria {
 
-    public boolean passes(Object o);
+    public boolean passes(Chanson o);
 }

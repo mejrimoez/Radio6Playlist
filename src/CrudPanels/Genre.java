@@ -8,10 +8,12 @@ package CrudPanels;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -36,6 +38,9 @@ public class Genre implements Serializable {
     @Column(name = "nomGenre")
     private String nomGenre;
 
+    @ManyToMany(targetEntity = Chanson.class, mappedBy = "genres")
+    private Collection<Chanson> chansons;
+
     public Genre() {
     }
 
@@ -51,6 +56,14 @@ public class Genre implements Serializable {
         String oldNomGenre = this.nomGenre;
         this.nomGenre = nomGenre;
         changeSupport.firePropertyChange("nomGenre", oldNomGenre, nomGenre);
+    }
+
+    public Collection<Chanson> getChansons() {
+        return chansons;
+    }
+
+    public void setChansons(Collection<Chanson> chansons) {
+        this.chansons = chansons;
     }
 
     @Override

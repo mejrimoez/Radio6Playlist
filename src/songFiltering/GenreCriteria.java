@@ -6,6 +6,7 @@
 package songFiltering;
 
 import CrudPanels.Chanson;
+import CrudPanels.Genre;
 
 /**
  *
@@ -20,8 +21,8 @@ public class GenreCriteria implements FilterCriteria {
     }
 
     @Override
-    public boolean passes(Object o) {
-        return ((Chanson) o).getNomGenre().equals(genre);
+    public boolean passes(Chanson o) {
+        return ((Chanson) o).getGenres().contains(new Genre(genre));
     }
 
 }

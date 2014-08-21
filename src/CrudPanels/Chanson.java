@@ -8,11 +8,13 @@ package CrudPanels;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -29,7 +31,6 @@ import javax.persistence.Transient;
     @NamedQuery(name = "Chanson.findAll", query = "SELECT c FROM Chanson c"),
     @NamedQuery(name = "Chanson.findByNumChanson", query = "SELECT c FROM Chanson c WHERE c.numChanson = :numChanson"),
     @NamedQuery(name = "Chanson.findByNomTheme", query = "SELECT c FROM Chanson c WHERE c.nomTheme = :nomTheme"),
-    @NamedQuery(name = "Chanson.findByNomGenre", query = "SELECT c FROM Chanson c WHERE c.nomGenre = :nomGenre"),
     @NamedQuery(name = "Chanson.findByNomChanteur", query = "SELECT c FROM Chanson c WHERE c.nomChanteur = :nomChanteur"),
     @NamedQuery(name = "Chanson.findByNomSymbole", query = "SELECT c FROM Chanson c WHERE c.nomSymbole = :nomSymbole"),
     @NamedQuery(name = "Chanson.findByNomPays", query = "SELECT c FROM Chanson c WHERE c.nomPays = :nomPays"),
@@ -48,9 +49,6 @@ public class Chanson implements Serializable {
     @JoinColumn(name = "nomTheme", referencedColumnName = "nomTheme")
     @ManyToOne
     private Theme nomTheme;
-    @JoinColumn(name = "nomGenre", referencedColumnName = "nomGenre")
-    @ManyToOne
-    private Genre nomGenre;
     @JoinColumn(name = "nomChanteur", referencedColumnName = "nomChanteur")
     @ManyToOne
     private Chanteur nomChanteur;
@@ -60,6 +58,10 @@ public class Chanson implements Serializable {
     @JoinColumn(name = "nomPays", referencedColumnName = "nomPays")
     @ManyToOne
     private Pays nomPays;
+
+    @ManyToMany(targetEntity = Genre.class)
+    private Collection<Genre> genres;
+
     @Column(name = "nomChanson")
     private String nomChanson;
     @Column(name = "periode")
@@ -70,6 +72,11 @@ public class Chanson implements Serializable {
     private String nomFichier;
     @Column(name = "cheminFichier")
     private String cheminFichier;
+    @Column(name = "longueur")
+    private Integer longueur;
+
+    @Transient
+    private Genre firstGenre;
 
     public Chanson() {
     }
@@ -98,14 +105,19 @@ public class Chanson implements Serializable {
         changeSupport.firePropertyChange("nomTheme", oldNomTheme, nomTheme);
     }
 
-    public Genre getNomGenre() {
-        return nomGenre;
+    public Collection<Genre> getGenres() {
+        return genres;
     }
 
-    public void setNomGenre(Genre nomGenre) {
-        Genre oldNomGenre = this.nomGenre;
-        this.nomGenre = nomGenre;
-        changeSupport.firePropertyChange("nomGenre", oldNomGenre, nomGenre);
+    public void setGenres(Collection<Genre> genres) {
+        Collection<Genre> oldGenres = this.genres;
+        this.genres = genres;
+        firstGenre = (Genre) genres.toArray()[0];
+        changeSupport.firePropertyChange("nomGenre", oldGenres, genres);
+    }
+
+    public Genre getFirstGenre() {
+        return firstGenre;
     }
 
     public Chanteur getNomChanteur() {
@@ -188,6 +200,16 @@ public class Chanson implements Serializable {
         changeSupport.firePropertyChange("classification", oldClassification, classification);
     }
 
+    public Integer getLongueur() {
+        return longueur;
+    }
+
+    public void setLongueur(Integer longueur) {
+        Integer oldLongueur = this.longueur;
+        this.longueur = longueur;
+        changeSupport.firePropertyChange("longueur", oldLongueur, longueur);
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -209,6 +231,12 @@ public class Chanson implements Serializable {
 
     @Override
     public String toString() {
+        if (longueur != null) {
+            return nomChanson + " " + (longueur / 60) + ":" + (longueur % 60);
+        }
+        if (nomChanson != null) {
+            return nomChanson;
+        }
         return nomFichier;
     }
 

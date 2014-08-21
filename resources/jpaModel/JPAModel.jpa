@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jpa:entity-mappings theme="MAC" id="_14081403133431" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_1.xsd" xmlns:ns4="http://nbmodeler.java.net" xmlns:jpa="http://java.sun.com/xml/ns/persistence/orm" xmlns:java="http://jcp.org/en/jsr/detail?id=270" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <jpa:entity class="Chanson" compositePrimaryKeyType="NONE" minimized="false" id="_14081403134014">
+        <jpa:table name="Chanson" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="numChanson" attribute-type="java.lang.Integer" id="_14081403134065">
+                <jpa:column name="numChanson" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="numChanson"/>
+            </jpa:id>
+            <jpa:basic name="cheminFichier" attribute-type="java.lang.String" id="_140814031340810">
+                <jpa:column name="cheminFichier" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+            </jpa:basic>
+            <jpa:basic name="nomFichier" attribute-type="java.lang.String" id="_140814031340911">
+                <jpa:column name="nomFichier" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+            </jpa:basic>
+            <jpa:basic name="nomChanson" attribute-type="java.lang.String" id="_140814031340913">
+                <jpa:column name="nomChanson" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+            </jpa:basic>
+            <jpa:basic name="periode" attribute-type="java.lang.Integer" id="_140814031340914">
+                <jpa:column name="periode" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+            </jpa:basic>
+            <jpa:basic name="classification" attribute-type="java.lang.Integer" id="_140814031340915">
+                <jpa:column name="classification" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+            </jpa:basic>
+            <jpa:many-to-one name="nomTheme" target-entity="Theme" optional="true" primaryKey="false" connected-entity-id="_140814031350424" id="_14081403134076">
+                <jpa:join-table/>
+            </jpa:many-to-one>
+            <jpa:many-to-one name="nomChanteur" target-entity="Chanteur" optional="true" primaryKey="false" connected-entity-id="_140814031342616" id="_14081403134088">
+                <jpa:join-table/>
+            </jpa:many-to-one>
+            <jpa:many-to-one name="nomSymbole" target-entity="Symbole" optional="true" primaryKey="false" connected-entity-id="_140814031348022" id="_14081403134089">
+                <jpa:join-table/>
+            </jpa:many-to-one>
+            <jpa:many-to-one name="nomPays" target-entity="Pays" optional="true" primaryKey="false" connected-entity-id="_140814031345920" id="_140814031340912">
+                <jpa:join-table/>
+            </jpa:many-to-one>
+            <jpa:many-to-many name="genres" target-entity="Genre" connected-entity-id="_140814031344318" connected-attribute-id="_140814067877647" id="_140814067877246">
+                <jpa:join-table/>
+            </jpa:many-to-many>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="Chanteur" compositePrimaryKeyType="NONE" minimized="false" id="_140814031342616">
+        <jpa:table name="Chanteur" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="nomChanteur" attribute-type="java.lang.String" id="_140814031342617">
+                <jpa:column name="nomChanteur" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="nomChanteur"/>
+            </jpa:id>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="Genre" compositePrimaryKeyType="NONE" minimized="false" id="_140814031344318">
+        <jpa:table name="Genre" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="nomGenre" attribute-type="java.lang.String" id="_140814031344319">
+                <jpa:column name="nomGenre" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="nomGenre"/>
+            </jpa:id>
+            <jpa:many-to-many name="chansons" target-entity="Chanson" mapped-by="genres" connected-entity-id="_14081403134014" connected-attribute-id="_140814067877246" id="_140814067877647"/>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="Pays" compositePrimaryKeyType="NONE" minimized="false" id="_140814031345920">
+        <jpa:table name="Pays" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="nomPays" attribute-type="java.lang.String" id="_140814031345921">
+                <jpa:column name="nomPays" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="nomPays"/>
+            </jpa:id>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="Symbole" compositePrimaryKeyType="NONE" minimized="false" id="_140814031348022">
+        <jpa:table name="Symbole" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="nomSymbole" attribute-type="java.lang.String" id="_140814031348023">
+                <jpa:column name="nomSymbole" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="nomSymbole"/>
+            </jpa:id>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="Theme" compositePrimaryKeyType="NONE" minimized="false" id="_140814031350424">
+        <jpa:table name="Theme" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="nomTheme" attribute-type="java.lang.String" id="_140814031350425">
+                <jpa:column name="nomTheme" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="nomTheme"/>
+            </jpa:id>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="Utilisateur" compositePrimaryKeyType="NONE" minimized="false" id="_140814031352926">
+        <jpa:table name="Utilisateur" catalog="radio6" schema=""/>
+        <jpa:attributes>
+            <jpa:id name="login" attribute-type="java.lang.String" id="_140814031352927">
+                <jpa:column name="login" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+                <jpa:sequence-generator name="login"/>
+            </jpa:id>
+            <jpa:basic name="pass" optional="false" attribute-type="java.lang.String" id="_140814031352928">
+                <jpa:column name="pass" unique="false" nullable="true" insertable="true" updatable="true" length="255" precision="0" scale="0"/>
+            </jpa:basic>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:diagram id="_14081403133442">
+        <plane elementRef="_14081403133431" id="_14081403133453_p">
+            <shape elementRef="_14081403134014" id="_14081403134014_gui">
+                <Bounds x="252.0" y="150.0" width="158.0" height="278.0"/>
+            </shape>
+            <shape elementRef="_140814031342616" id="_140814031342616_gui">
+                <Bounds x="474.0" y="492.0" width="162.0" height="54.0"/>
+            </shape>
+            <shape elementRef="_140814031344318" id="_140814031344318_gui">
+                <Bounds x="32.0" y="86.0" width="139.0" height="86.0"/>
+            </shape>
+            <shape elementRef="_140814031345920" id="_140814031345920_gui">
+                <Bounds x="700.0" y="150.0" width="130.0" height="54.0"/>
+            </shape>
+            <shape elementRef="_140814031348022" id="_140814031348022_gui">
+                <Bounds x="32.0" y="492.0" width="156.0" height="54.0"/>
+            </shape>
+            <shape elementRef="_140814031350424" id="_140814031350424_gui">
+                <Bounds x="474.0" y="32.0" width="143.0" height="54.0"/>
+            </shape>
+            <shape elementRef="_140814031352926" id="_140814031352926_gui">
+                <Bounds x="958.0" y="150.0" width="171.0" height="86.0"/>
+            </shape>
+        </plane>
+    </jpa:diagram>
+</jpa:entity-mappings>

@@ -20,7 +20,7 @@ public class NomChanteurCriteria implements FilterCriteria {
     }
 
     @Override
-    public boolean passes(Object o) {
+    public boolean passes(Chanson o) {
         return ((Chanson) o).getNomChanteur().equals(nomChanteur);
     }
 

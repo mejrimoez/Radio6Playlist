@@ -5,6 +5,7 @@
  */
 package songFiltering;
 
+import CrudPanels.Chanson;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class CollectionFilter implements Serializable {
 
-    private Hashtable<String, Object> allFilterCriteria = new Hashtable<>();
+    private final Hashtable<String, Object> allFilterCriteria = new Hashtable<>();
 
     public void addFilterCriteria(String name, FilterCriteria filter) {
         allFilterCriteria.put(name, filter);
@@ -32,7 +33,7 @@ public class CollectionFilter implements Serializable {
         if (collection != null) {
             Iterator iter = collection.iterator();
             while (iter.hasNext()) {
-                Object o = iter.next();
+                Chanson o = (Chanson) iter.next();
                 if (!passesAllCritertia(o)) {
                     iter.remove();
                 }
@@ -42,22 +43,24 @@ public class CollectionFilter implements Serializable {
 
     public List filterCopy(List inputCollection) {
         List outputCollection = null;
-        if (inputCollection != null) {
+        try {
             outputCollection = (List) createObjectSameClass(inputCollection);
             outputCollection.addAll(inputCollection);
 
             Iterator iter = outputCollection.iterator();
             while (iter.hasNext()) {
-                Object o = iter.next();
+                Chanson o = (Chanson) iter.next();
                 if (!passesAllCritertia(o)) {
                     iter.remove();
                 }
             }
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
         }
         return outputCollection;
     }
 
-    private boolean passesAllCritertia(Object o) {
+    private boolean passesAllCritertia(Chanson o) {
         for (String key : allFilterCriteria.keySet()) {
             FilterCriteria filter = (FilterCriteria) allFilterCriteria.get(key);
             if (!filter.passes(o)) {

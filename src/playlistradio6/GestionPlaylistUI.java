@@ -11,6 +11,7 @@
 package playlistradio6;
 
 import CrudPanels.Chanson;
+import CrudPanels.ChansonJpaController;
 import CrudPanels.Chanteur;
 import CrudPanels.ConfigurationServeur;
 import CrudPanels.Genre;
@@ -27,6 +28,7 @@ import CrudPanels.Theme;
 import FileSearch.FileSearch;
 import FileSearch.PlaylistFileFilter;
 import java.awt.Cursor;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -36,19 +38,36 @@ import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import songFiltering.CollectionFilter;
+import songFiltering.GenreCriteria;
+import songFiltering.NomChansonCriteria;
+import songFiltering.NomChanteurCriteria;
+import songFiltering.PaysCriteria;
+import songFiltering.PeriodeCriteria;
 import songFiltering.RatingCriteria;
+import songFiltering.SymboleCriteria;
+import songFiltering.ThemeCriteria;
 
 /**
  *
@@ -61,10 +80,10 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
      */
     public GestionPlaylistUI() {
         listeFichiers = new ArrayList<>();
+        collectionFilter = new CollectionFilter();
+        chansonsFiltres = new LinkedList();
         initComponents();
         currentChanson = null;
-        collectionFilter = new CollectionFilter();
-        chansonsFiltres = new LinkedList(listChansons);
         ConfigurationServeur.isStartup = false;
     }
 
@@ -150,6 +169,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         progressBar2 = new javax.swing.JProgressBar();
         jLabel14 = new javax.swing.JLabel();
         playlist =  org.jdesktop.observablecollections.ObservableCollections.observableList(new java.util.LinkedList());
+        radioButtonGroup = new javax.swing.ButtonGroup();
         contenu = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         titresSansInfos = new javax.swing.JList();
@@ -171,12 +191,21 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         listeTheme1 = new javax.swing.JComboBox();
         genreCheckbox1 = new javax.swing.JCheckBox();
         periodeCheckbox1 = new javax.swing.JCheckBox();
+        SelectionManager manager = new SelectionManager();
+        MultiRenderer renderer = new MultiRenderer(manager);
         listeGenre1 = new javax.swing.JComboBox();
         periodeSpinner1 = new javax.swing.JSpinner();
         ratingCheckbox1 = new javax.swing.JCheckBox();
         ratingPanel1 = new StarRater();
         chansonCheckBox = new javax.swing.JCheckBox();
         chansonTextField = new javax.swing.JTextField();
+        jLabel24 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        automaticRadio = new javax.swing.JRadioButton();
+        manualRadio = new javax.swing.JRadioButton();
+        jLabel25 = new javax.swing.JLabel();
+        jSpinner1 = new javax.swing.JSpinner();
+        jButton1 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         chansonsTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
@@ -282,7 +311,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
 
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listGenres, genre);
         bindingGroup.addBinding(jComboBoxBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titresSansInfos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.nomGenre}"), genre, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titresSansInfos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.firstGenre}"), genre, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         jLabel13.setText("Classification :");
@@ -805,6 +834,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         titresSansInfos.setModel(model);
         jScrollPane2.setViewportView(titresSansInfos);
 
+        jLabel4.setFont(new java.awt.Font("DejaVu Sans", 3, 14)); // NOI18N
         jLabel4.setText("Liste sans informations");
 
         infosChans.setText("Informations sur la chanson");
@@ -881,22 +911,22 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             .addGroup(contenuLayout.createSequentialGroup()
                 .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(contenuLayout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(contenuLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addComponent(infosChans))))
-                    .addGroup(contenuLayout.createSequentialGroup()
                         .addGap(64, 64, 64)
-                        .addComponent(jLabel4)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 943, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addComponent(jLabel4))
+                    .addGroup(contenuLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jScrollPane2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenuLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(modifInfoChans)
-                .addGap(248, 248, 248))
+                .addGap(473, 473, 473))
+            .addGroup(contenuLayout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addComponent(infosChans)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contenuLayout.setVerticalGroup(
             contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -913,7 +943,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 .addComponent(modifInfoChans)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
 
         contenu1.setPreferredSize(new java.awt.Dimension(800, 558));
@@ -930,11 +960,6 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 chanteurCheckBox1ItemStateChanged(evt);
             }
         });
-        chanteurCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chanteurCheckBox1ActionPerformed(evt);
-            }
-        });
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel6.setText("Sélection par :");
@@ -942,9 +967,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChanteurs, listeChanteur1, "chanteur");
         bindingGroup.addBinding(jComboBoxBinding);
 
-        listeChanteur1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeChanteur1ItemStateChanged(evt);
+        listeChanteur1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeChanteur1ActionPerformed(evt);
             }
         });
 
@@ -958,9 +983,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listPays, listePays1, "pays");
         bindingGroup.addBinding(jComboBoxBinding);
 
-        listePays1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listePays1ItemStateChanged(evt);
+        listePays1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listePays1ActionPerformed(evt);
             }
         });
 
@@ -974,9 +999,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listSymboles, listeSymbole1, "symbole");
         bindingGroup.addBinding(jComboBoxBinding);
 
-        listeSymbole1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeSymbole1ItemStateChanged(evt);
+        listeSymbole1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeSymbole1ActionPerformed(evt);
             }
         });
 
@@ -990,9 +1015,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listThemes, listeTheme1, "theme");
         bindingGroup.addBinding(jComboBoxBinding);
 
-        listeTheme1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeTheme1ItemStateChanged(evt);
+        listeTheme1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeTheme1ActionPerformed(evt);
             }
         });
 
@@ -1009,21 +1034,19 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 periodeCheckbox1ItemStateChanged(evt);
             }
         });
-        periodeCheckbox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                periodeCheckbox1ActionPerformed(evt);
-            }
-        });
 
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listGenres, listeGenre1, "genre");
         bindingGroup.addBinding(jComboBoxBinding);
 
-        listeGenre1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeGenre1ItemStateChanged(evt);
+        listeGenre1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeGenre1ActionPerformed(evt);
             }
         });
+        listeGenre1.addActionListener(manager);
+        listeGenre1.setRenderer(renderer);
 
+        periodeSpinner1.setModel(new javax.swing.SpinnerNumberModel(1000, 1000, 9000, 10));
         periodeSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 periodeSpinner1StateChanged(evt);
@@ -1041,8 +1064,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             public void handleSelection(int selection)
             {
                 //JOptionPane.showMessageDialog(null, "Selection "+selection);
-                collectionFilter.addFilterCriteria("rating", new RatingCriteria(selection));
-                chansonsFiltres = collectionFilter.filterCopy(listChansons);
+                ratingCheckbox1.setSelected(true);
             }
         });
 
@@ -1063,15 +1085,61 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 chansonCheckBoxItemStateChanged(evt);
             }
         });
-        chansonCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chansonCheckBoxActionPerformed(evt);
-            }
-        });
 
         chansonTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 chansonTextFieldKeyReleased(evt);
+            }
+        });
+
+        jLabel24.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel24.setText("Mode de sélection :");
+
+        radioButtonGroup.add(automaticRadio);
+        automaticRadio.setText("Automatique");
+        automaticRadio.setToolTipText("sélection automatique");
+
+        radioButtonGroup.add(manualRadio);
+        manualRadio.setSelected(true);
+        manualRadio.setText("Manuelle");
+        manualRadio.setToolTipText("sélection manuelle");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(automaticRadio)
+                .addGap(28, 28, 28)
+                .addComponent(manualRadio)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(automaticRadio)
+                    .addComponent(manualRadio))
+                .addContainerGap())
+        );
+
+        jLabel25.setText("Durée du playlist (minutes)");
+
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, automaticRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jSpinner1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jButton1.setText("Choisir playlist Autmatiquement");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, automaticRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -1082,29 +1150,50 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(jLabel6))
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel24)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chanteurCheckBox1)
-                            .addComponent(paysCheckbox1)
-                            .addComponent(themeCheckbox1)
-                            .addComponent(symboleCheckbox1)
-                            .addComponent(genreCheckbox1)
-                            .addComponent(periodeCheckbox1)
-                            .addComponent(ratingCheckbox1)
-                            .addComponent(chansonCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(periodeSpinner1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                            .addComponent(listeGenre1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(listeTheme1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(listeSymbole1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(listePays1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ratingPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(chansonTextField)
-                            .addComponent(listeChanteur1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chanteurCheckBox1)
+                                    .addComponent(paysCheckbox1)
+                                    .addComponent(themeCheckbox1)
+                                    .addComponent(symboleCheckbox1)
+                                    .addComponent(genreCheckbox1)
+                                    .addComponent(periodeCheckbox1)
+                                    .addComponent(ratingCheckbox1)
+                                    .addComponent(chansonCheckBox))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(listeChanteur1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(chansonTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(listePays1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(listeSymbole1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(listeTheme1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(listeGenre1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(periodeSpinner1, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ratingPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 15, Short.MAX_VALUE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(jButton1)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel25)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jSpinner1)))))))
+                .addGap(35, 35, 35))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jLabel6)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -1112,11 +1201,11 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chansonCheckBox)
                     .addComponent(chansonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chanteurCheckBox1)
                     .addComponent(listeChanteur1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1144,9 +1233,20 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ratingCheckbox1)
                     .addComponent(ratingPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addComponent(jLabel24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
+        chansonsTable.setAutoCreateRowSorter(true);
         chansonsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChansons, chansonsTable);
@@ -1189,6 +1289,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jLabel3.setText("Tous les Chansons");
 
         jScrollPane5.setPreferredSize(new java.awt.Dimension(456, 206));
+
+        playlistTable.setAutoCreateRowSorter(true);
 
         jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, playlist, playlistTable);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
@@ -1253,41 +1355,37 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 .addGap(515, 515, 515))
             .addGroup(contenu1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
                 .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(contenu1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 388, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
+                        .addGap(376, 376, 376)
                         .addComponent(jLabel5)
                         .addGap(100, 100, 100)
                         .addComponent(selectSongButton)
                         .addGap(314, 314, 314))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(contenu1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane4)
                         .addContainerGap())))
         );
         contenu1Layout.setVerticalGroup(
             contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(contenu1Layout.createSequentialGroup()
-                .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(contenu1Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(selectSongButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(31, 31, 31))
-                    .addGroup(contenu1Layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)))
+                .addGap(34, 34, 34)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(selectSongButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(42, 42, 42))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -1449,17 +1547,20 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(contenu, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(contenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 1268, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
+                        .addGap(8, 8, 8))
+                    .addComponent(contenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 1325, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 845, Short.MAX_VALUE)
+                .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 853, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 398, Short.MAX_VALUE))
+                .addComponent(contenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 554, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -1566,8 +1667,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_ConfigGenreActionPerformed
 
     private void ConfigServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigServeurActionPerformed
-        JFrame frame = new JFrame();
-        frame.setContentPane(new ConfigurationServeur());
+        ConfigurationServeur frame = new ConfigurationServeur();
         frame.setLocationRelativeTo(this);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.pack();
@@ -1612,15 +1712,33 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             contenu.setEnabled(false);
 
             try {
+                List<Chanson> importedList = new ArrayList<>();
+
                 fis = new FileInputStream(file);
                 String s = "";
                 int content;
                 while ((content = fis.read()) != -1) {
                     s += (char) content;
                 }
-                String[] strs = s.split(",";
+                StringTokenizer st = new StringTokenizer(s, ",");
+                while (st.hasMoreElements()) {
+                    String id = st.nextToken();
+                    try {
+                        int number = Integer.parseInt(id);
+                        ChansonJpaController chansonJpaController = new ChansonJpaController(javax.persistence.Persistence.createEntityManagerFactory("PersistanceUnit"));
+                        Chanson chanson = chansonJpaController.findChanson(number);
+                        if (chanson != null) {
+                            importedList.add(chanson);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                // TODO complete importation of playlist
+                // initialize chanslist with importedlist
+                listChansons.clear();
+                listChansons.addAll(importedList);
+
                 System.out.println("Susccess !!!");
             } catch (Exception ex) {
                 System.out.println("problem accessing file" + file.getAbsolutePath());
@@ -1656,70 +1774,112 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         currentChanson = new Chanson();
         currentChanson.setNomFichier(((Chanson) titresSansInfos.getSelectedValue()).getNomFichier());
         currentChanson.setCheminFichier(((Chanson) titresSansInfos.getSelectedValue()).getCheminFichier());
-        ajoutTitre.setLocationRelativeTo(null);
+        ((StarRater) rating).setSelection(((Chanson) titresSansInfos.getSelectedValue()).getClassification());
+        ajoutTitre.setLocationRelativeTo(this);
         ajoutTitre.pack();
         ajoutTitre.setVisible(true);
 
     }//GEN-LAST:event_infosChansActionPerformed
 
     private void chanteurCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chanteurCheckBox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("nomChanteur");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && listeChanteur1 != null
+                && listChansons != null && chansonsFiltres != null) {
+            collectionFilter.addFilterCriteria("nomChanteur", new NomChanteurCriteria(String.valueOf(listeChanteur1.getSelectedItem())));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_chanteurCheckBox1ItemStateChanged
 
-    private void chanteurCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chanteurCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chanteurCheckBox1ActionPerformed
-
-    private void listeChanteur1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_listeChanteur1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_listeChanteur1ItemStateChanged
-
     private void paysCheckbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_paysCheckbox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("nomPays");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && listePays1 != null
+                && listChansons != null && chansonsFiltres != null) {
+            collectionFilter.addFilterCriteria("nomPays", new PaysCriteria(String.valueOf(listePays1.getSelectedItem())));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_paysCheckbox1ItemStateChanged
 
-    private void listePays1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_listePays1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_listePays1ItemStateChanged
-
     private void symboleCheckbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_symboleCheckbox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("nomSymbole");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && listeSymbole1 != null
+                && listChansons != null && chansonsFiltres != null) {
+            collectionFilter.addFilterCriteria("nomSymbole", new SymboleCriteria(String.valueOf(listeSymbole1.getSelectedItem())));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_symboleCheckbox1ItemStateChanged
 
-    private void listeSymbole1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_listeSymbole1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_listeSymbole1ItemStateChanged
-
     private void themeCheckbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_themeCheckbox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("nomTheme");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && listeTheme1 != null
+                && listChansons != null && chansonsFiltres != null) {
+            collectionFilter.addFilterCriteria("nomTheme", new ThemeCriteria(String.valueOf(listeTheme1.getSelectedItem())));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_themeCheckbox1ItemStateChanged
 
-    private void listeTheme1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_listeTheme1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_listeTheme1ItemStateChanged
-
     private void genreCheckbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_genreCheckbox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("nomGenre");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && listeGenre1 != null
+                && listChansons != null && chansonsFiltres != null) {
+            collectionFilter.addFilterCriteria("nomGenre", new GenreCriteria(String.valueOf(listeGenre1.getSelectedItem())));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_genreCheckbox1ItemStateChanged
 
     private void periodeCheckbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_periodeCheckbox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("periode");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && periodeSpinner1 != null
+                && chansonsFiltres != null && listChansons != null) {
+            collectionFilter.addFilterCriteria("periode", new PeriodeCriteria(Integer.parseInt(String.valueOf(periodeSpinner1.getValue()))));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_periodeCheckbox1ItemStateChanged
 
-    private void periodeCheckbox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_periodeCheckbox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_periodeCheckbox1ActionPerformed
-
-    private void listeGenre1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_listeGenre1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_listeGenre1ItemStateChanged
-
     private void periodeSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_periodeSpinner1StateChanged
-        // TODO add your handling code here:
+        periodeCheckbox1.setSelected(true);
     }//GEN-LAST:event_periodeSpinner1StateChanged
 
     private void ratingCheckbox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ratingCheckbox1ItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("rating");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && ratingPanel1 != null && listChansons != null) {
+            collectionFilter.addFilterCriteria("rating", new RatingCriteria(((StarRater) ratingPanel1).getSelection()));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_ratingCheckbox1ItemStateChanged
 
     // to refresh collections when changing configuration
@@ -1779,7 +1939,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         currentChanson.setNumChanson(null);
         currentChanson.setNomChanson(nomChanson.getText());
         currentChanson.setNomChanteur(new Chanteur(String.valueOf(nomChanteur.getSelectedItem())));
-        currentChanson.setNomGenre(new Genre(String.valueOf(genre.getSelectedItem())));
+        List<Genre> list = new ArrayList<>();
+        list.add(new Genre(String.valueOf(genre.getSelectedItem())));
+        currentChanson.setGenres(list);
         currentChanson.setNomPays(new Pays(String.valueOf(pays.getSelectedItem())));
         currentChanson.setNomSymbole(new Symbole(String.valueOf(symbole.getSelectedItem())));
         currentChanson.setNomTheme(new Theme(String.valueOf(theme.getSelectedItem())));
@@ -1853,7 +2015,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         entityManager1.getTransaction().begin();
         currentChanson.setNomChanson(nomChanson.getText());
         currentChanson.setNomChanteur(new Chanteur(String.valueOf(nomChanteur.getSelectedItem())));
-        currentChanson.setNomGenre(new Genre(String.valueOf(genre.getSelectedItem())));
+
+        currentChanson.setGenres(new ArrayList<Genre>().add(new Genre(String.valueOf(genre.getSelectedItem()))));
         currentChanson.setNomPays(new Pays(String.valueOf(pays.getSelectedItem())));
         currentChanson.setNomSymbole(new Symbole(String.valueOf(symbole.getSelectedItem())));
         currentChanson.setNomTheme(new Theme(String.valueOf(theme.getSelectedItem())));
@@ -1894,14 +2057,14 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_ajoutSymboleButton2ActionPerformed
 
     private void modifInfoChansActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifInfoChansActionPerformed
-        currentChanson = new Chanson();
-        Chanson c = (Chanson) listChansons.get(tableChansons.convertRowIndexToModel(tableChansons.getSelectedRow()));
-        currentChanson.setNomFichier(c.getNomFichier());
-        currentChanson.setCheminFichier(c.getCheminFichier());
-        currentChanson.setClassification(c.getClassification());
-//        StarRater r = (StarRater) rating1;
-        StarRater r = new StarRater();
-        r.setSelection(c.getClassification());
+//        currentChanson = new Chanson();
+//        Chanson c = (Chanson) listChansons.get(tableChansons.convertRowIndexToModel(tableChansons.getSelectedRow()));
+//        currentChanson.setNomFichier(c.getNomFichier());
+//        currentChanson.setCheminFichier(c.getCheminFichier());
+//        currentChanson.setClassification(c.getClassification());
+////        StarRater r = (StarRater) rating1;
+//        StarRater r = new StarRater();
+//        r.setSelection(c.getClassification());
         modifTitre.setLocationRelativeTo(this);
         modifTitre.pack();
         modifTitre.setVisible(true);
@@ -2077,21 +2240,24 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void chansonCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chansonCheckBoxItemStateChanged
-        // TODO add your handling code here:
+        // déselection --> enlevement du filtre
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            collectionFilter.removeFilterCriteria("nomChanson");
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
+        // sélection --> ajout d'un filtre
+        if (evt.getStateChange() == ItemEvent.SELECTED && chansonTextField != null
+                && listChansons != null && chansonsFiltres != null) {
+            collectionFilter.addFilterCriteria("nomChanson", new NomChansonCriteria(chansonTextField.getText()));
+            chansonsFiltres = collectionFilter.filterCopy(listChansons);
+        }
     }//GEN-LAST:event_chansonCheckBoxItemStateChanged
 
-    private void chansonCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chansonCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chansonCheckBoxActionPerformed
-
     private void chansonTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chansonTextFieldKeyReleased
-
-        // TODO filtration Chansons
-        Strin text = chansonTextField.getText();
-        for (Object c : listChansons) {
-            if (!((Chanson) c).getNomChanson().contains(text)) {
-
-            }
+        if (chansonTextField.getText().equals("")) {
+            chansonCheckBox.setSelected(false);
+        } else {
+            chansonCheckBox.setSelected(true);
         }
     }//GEN-LAST:event_chansonTextFieldKeyReleased
 
@@ -2113,13 +2279,46 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         contenu.setEnabled(false);
         contenu1.setVisible(false);
         contenu1.setEnabled(false);
-        initComponents();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(this.getToolkit().getScreenSize());
         validate();
         setVisible(true);
     }//GEN-LAST:event_closeProjectsActionPerformed
+
+    private void listeChanteur1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeChanteur1ActionPerformed
+//        chansonCheckBox.setSelected(true);
+    }//GEN-LAST:event_listeChanteur1ActionPerformed
+
+    private void listePays1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listePays1ActionPerformed
+//        paysCheckbox1.setSelected(true);
+    }//GEN-LAST:event_listePays1ActionPerformed
+
+    private void listeSymbole1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeSymbole1ActionPerformed
+//        symboleCheckbox1.setSelected(true);
+    }//GEN-LAST:event_listeSymbole1ActionPerformed
+
+    private void listeTheme1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeTheme1ActionPerformed
+//        themeCheckbox1.setSelected(true);
+    }//GEN-LAST:event_listeTheme1ActionPerformed
+
+    private void listeGenre1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeGenre1ActionPerformed
+//        genreCheckbox1.setSelected(true);
+    }//GEN-LAST:event_listeGenre1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        final int longueur_demade = (Integer) jSpinner1.getValue();
+        int long_courante = 0;
+
+        for (int i = 0; i < listChansons.size(); i++) {
+            if (long_courante < longueur_demade) {
+                Chanson source = (Chanson) listChansons.get(chansonsTable.convertRowIndexToModel(i));
+                long_courante += source.getLongueur();
+                playlist.add(source);
+                listChansons.remove(source);
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     public void initSongs() {
         // initialize music list
@@ -2157,7 +2356,6 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         setVisible(true);
         loadFrame.setVisible(true);
         SwingWorker worker = new SwingWorker() {
-
             @Override
             protected String doInBackground() throws Exception {
                 // rechercher le dossier entré
@@ -2169,10 +2367,12 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 int count = fileSearch.getResult().size();
                 if (count == 0) {
                     System.out.println("\nNo result found!");
+                    JOptionPane.showMessageDialog(null, "Ce dossier ne contient aucune chanson !", "Pas de Chansons", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     System.out.println("\nFound " + count + " result!\n");
+
                     for (Chanson matched : fileSearch.getResult()) {
-                        System.out.println("Found : " + matched.getNomFichier());
+                        System.out.println(" " + matched.toString());
                     }
                     listeFichiers.addAll(fileSearch.getResult());
                 }
@@ -2180,6 +2380,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             }
 
             @Override
+
             protected void done() {
                 loadFrame.setVisible(false);
 
@@ -2205,28 +2406,40 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
 
     }
 
+    public void initFilters() {
+        CollectionFilter collectionFilter = new CollectionFilter();
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+            /* Set the Nimbus look and feel */
+            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+            /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+             * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+             */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//
+//                }
+//            }
+//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(GestionPlaylistUI.class
+//                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
 
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GestionPlaylistUI.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //</editor-fold>
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(GestionPlaylistUI.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -2275,6 +2488,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.persistence.Query all_pays_query;
     private javax.persistence.Query all_symbole_query;
     private javax.persistence.Query all_theme_query;
+    private javax.swing.JRadioButton automaticRadio;
     private javax.swing.JButton boutonAjouter;
     private javax.swing.JButton boutonAjouter1;
     private javax.swing.JButton cancelButton;
@@ -2298,6 +2512,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox genreCheckbox1;
     private javax.swing.JMenuItem infoSongItem;
     private javax.swing.JButton infosChans;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2314,6 +2529,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2322,6 +2539,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -2329,6 +2547,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JSpinner jSpinner1;
     private java.util.List listChansons;
     private java.util.List listChanteurs;
     private java.util.List listGenres;
@@ -2341,6 +2560,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JComboBox listeSymbole1;
     private javax.swing.JComboBox listeTheme1;
     private javax.swing.JDialog loadFrame;
+    private javax.swing.JRadioButton manualRadio;
     private javax.swing.JMenu menuAide;
     private javax.swing.JMenu menuConfig;
     private javax.swing.JMenu menuFichier;
@@ -2363,6 +2583,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JTable playlistTable;
     private javax.swing.JProgressBar progressBar1;
     private javax.swing.JProgressBar progressBar2;
+    private javax.swing.ButtonGroup radioButtonGroup;
     private javax.swing.JPanel rating;
     private javax.swing.JPanel rating1;
     private javax.swing.JCheckBox ratingCheckbox1;

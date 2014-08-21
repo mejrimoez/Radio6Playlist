@@ -20,7 +20,7 @@ public class PaysCriteria implements FilterCriteria {
     }
 
     @Override
-    public boolean passes(Object o) {
+    public boolean passes(Chanson o) {
         return ((Chanson) o).getNomPays().equals(pays);
     }
 
