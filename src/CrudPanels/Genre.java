@@ -8,8 +8,9 @@ package CrudPanels;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -38,8 +39,8 @@ public class Genre implements Serializable {
     @Column(name = "nomGenre")
     private String nomGenre;
 
-    @ManyToMany(targetEntity = Chanson.class, mappedBy = "genres")
-    private Collection<Chanson> chansons;
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "genres")
+    private List<Chanson> chansons;
 
     public Genre() {
     }
@@ -58,11 +59,11 @@ public class Genre implements Serializable {
         changeSupport.firePropertyChange("nomGenre", oldNomGenre, nomGenre);
     }
 
-    public Collection<Chanson> getChansons() {
+    public List<Chanson> getChansons() {
         return chansons;
     }
 
-    public void setChansons(Collection<Chanson> chansons) {
+    public void setChansons(List<Chanson> chansons) {
         this.chansons = chansons;
     }
 

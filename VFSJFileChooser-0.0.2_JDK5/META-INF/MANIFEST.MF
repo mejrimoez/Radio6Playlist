@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.0
+Created-By: 1.5.0_14-b03 (Sun Microsystems Inc.)
+Main-Class: net.sf.vfsjfilechooser.demo.Main
+Class-Path: lib/commons-compress-20050911.jar lib/commons-httpclient-2
+ .0.2.jar lib/commons-lang-2.0.jar lib/commons-logging-1.0.4.jar lib/c
+ ommons-net-1.4.0.jar lib/commons-vfs-1.1-SNAPSHOT.jar lib/commons-vfs
+ -sandbox-1.1-SNAPSHOT.jar lib/jakarta-slide-webdavlib-20050629.161100
+ .jar lib/jcifs-1.2.9.jar lib/jsch-0.1.29.jar lib/oro-2.0.8.jar
+X-COMMENT: Main-Class will be added automatically by build
+

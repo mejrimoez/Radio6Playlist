@@ -5,14 +5,23 @@
  */
 package CrudPanels;
 
+import FileSearch.FileSearch;
+import java.awt.Cursor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import playlistradio6.GestionPlaylistUI;
+import static playlistradio6.GestionPlaylistUI.loadFrame;
 
 /**
  *
@@ -50,6 +59,7 @@ public class ConfigurationServeur extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Configuration du serveur");
+        setIconImage(new ImageIcon(getClass().getResource("/logofr.png")).getImage());
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -73,7 +83,7 @@ public class ConfigurationServeur extends javax.swing.JFrame {
             }
         });
 
-        cancelButton.setText("Conf. par défaut");
+        cancelButton.setText("Config. par défaut");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -165,6 +175,7 @@ public class ConfigurationServeur extends javax.swing.JFrame {
         }
 
         this.setVisible(false);
+
         if (isStartup) {
             GestionPlaylistUI fen = new GestionPlaylistUI();
             fen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -173,6 +184,63 @@ public class ConfigurationServeur extends javax.swing.JFrame {
             fen.setVisible(true);
         } else {
             // TODO call init song to reload songs and update GUI
+
+            final List<Chanson> listeFichiers = new ArrayList<>();
+
+            // doing a parse in the song directory
+            loadFrame.setLocationRelativeTo(null);
+            loadFrame.setAlwaysOnTop(true);
+            loadFrame.requestFocus();
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            loadFrame.pack();
+            setVisible(true);
+            loadFrame.setVisible(true);
+            SwingWorker worker = new SwingWorker() {
+                @Override
+                protected String doInBackground() throws Exception {
+                    // rechercher le dossier entré
+                    FileSearch fileSearch = new FileSearch();
+
+                    //try different directory and filename
+                    fileSearch.searchDirectory(new File(musicPath.getText()));
+
+                    int count = fileSearch.getResult().size();
+                    if (count == 0) {
+                        System.out.println("\nNo result found!");
+                        JOptionPane.showMessageDialog(null, "Ce dossier ne contient aucune chanson !", "Pas de Chansons", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        System.out.println("\nFound " + count + " result!\n");
+
+                        for (Chanson matched : fileSearch.getResult()) {
+                            System.out.println(" " + matched.toString());
+                        }
+                        listeFichiers.addAll(fileSearch.getResult());
+                    }
+                    return "success!";
+                }
+
+                @Override
+
+                protected void done() {
+                    loadFrame.setVisible(false);
+
+//                    // refresh list
+//                    model = new DefaultListModel<>();
+//                    for (Chanson s : listeFichiers) {
+//                        // eliminer les chansons deja configurés
+//                        if (!listChansons.contains(s)) {
+//                            model.addElement(s);
+//                        }
+//                    }
+                    //titresSansInfos.setModel(model);
+                    // reinitialize cursor
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
+
+            };
+
+            worker.addPropertyChangeListener(null);
+            worker.execute();
         }
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -216,22 +284,7 @@ public class ConfigurationServeur extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConfigurationServeur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConfigurationServeur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConfigurationServeur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConfigurationServeur.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -244,6 +297,8 @@ public class ConfigurationServeur extends javax.swing.JFrame {
             }
         });
     }
+
+    public static DefaultListModel<Chanson> model;
     public static boolean isStartup = true;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseServ;

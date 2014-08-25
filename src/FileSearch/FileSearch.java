@@ -11,21 +11,15 @@ import CrudPanels.ChanteurJpaController;
 import CrudPanels.Genre;
 import CrudPanels.GenreJpaController;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.persistence.EntityManagerFactory;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.TagException;
 import javax.persistence.Persistence;
 import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.KeyNotFoundException;
 
 public class FileSearch {
 
@@ -64,7 +58,6 @@ public class FileSearch {
                         if (temp.getName().toLowerCase().endsWith(".mp3")
                                 || temp.getName().toLowerCase().endsWith(".wav")
                                 || temp.getName().toLowerCase().endsWith(".wma")) {
-                            // TODO get the informations from the mp3 file !!!!
 
                             try {
                                 Tag tag;
@@ -101,30 +94,26 @@ public class FileSearch {
                                 }
 
                                 try {
-                                    // remplir le genre de la chanson
-                                    GenreJpaController controller = new GenreJpaController(emf);
-                                    if (controller.findGenre(tag.getFirst(FieldKey.GENRE)) == null && tag.getFirst(FieldKey.GENRE).matches("[a-zA-Zéè].*")) {
-                                        controller.create(new Genre(tag.getFirst(FieldKey.GENRE)));
+                                    if (tag.getFirst(FieldKey.GENRE).matches("[^\\(\\) 0-9]+")) {
+                                        // remplir le genre de la chanson
+                                        GenreJpaController controller = new GenreJpaController(emf);
+                                        if (controller.findGenre(tag.getFirst(FieldKey.GENRE)) == null) {
+                                            controller.create(new Genre(tag.getFirst(FieldKey.GENRE)));
+                                        }
+                                        List<Genre> listGenres = new ArrayList<>();
+                                        listGenres.add(new Genre(tag.getFirst(FieldKey.GENRE)));
+                                        c.setGenres(listGenres);
                                     }
-                                    List<Genre> listGenres = new ArrayList<>();
-                                    listGenres.add(new Genre(tag.getFirst(FieldKey.GENRE)));
-                                    c.setGenres(listGenres);
                                 } catch (Exception e) {
-                                }
-
-                                try {
-                                    // remplir la classification
-                                    c.setClassification(Integer.parseInt(tag.getFirst(FieldKey.RATING)));
-                                } catch (KeyNotFoundException | NumberFormatException e) {
                                 }
 
                                 try {
                                     // remplir la période
                                     c.setPeriode(Integer.parseInt(tag.getFirst(FieldKey.YEAR)));
-                                } catch (KeyNotFoundException | NumberFormatException e) {
+                                } catch (Exception e) {
                                 }
 
-                            } catch (SecurityException | CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             c.setCheminFichier(temp.getAbsolutePath());

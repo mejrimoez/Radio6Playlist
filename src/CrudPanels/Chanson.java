@@ -8,12 +8,17 @@ package CrudPanels;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -44,6 +49,7 @@ public class Chanson implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numChanson")
     private Integer numChanson;
     @JoinColumn(name = "nomTheme", referencedColumnName = "nomTheme")
@@ -59,9 +65,6 @@ public class Chanson implements Serializable {
     @ManyToOne
     private Pays nomPays;
 
-    @ManyToMany(targetEntity = Genre.class)
-    private Collection<Genre> genres;
-
     @Column(name = "nomChanson")
     private String nomChanson;
     @Column(name = "periode")
@@ -75,8 +78,13 @@ public class Chanson implements Serializable {
     @Column(name = "longueur")
     private Integer longueur;
 
-    @Transient
-    private Genre firstGenre;
+    @JoinTable(name = "Chanson_Genre", joinColumns = {
+        @JoinColumn(name = "chansons_numChanson", referencedColumnName = "numChanson")
+    }, inverseJoinColumns = {
+        @JoinColumn(name = "genres_nomGenre", referencedColumnName = "nomGenre")
+    })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Genre> genres;
 
     public Chanson() {
     }
@@ -105,19 +113,14 @@ public class Chanson implements Serializable {
         changeSupport.firePropertyChange("nomTheme", oldNomTheme, nomTheme);
     }
 
-    public Collection<Genre> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(Collection<Genre> genres) {
-        Collection<Genre> oldGenres = this.genres;
+    public void setGenres(List<Genre> genres) {
+        List<Genre> oldGenres = this.genres;
         this.genres = genres;
-        firstGenre = (Genre) genres.toArray()[0];
         changeSupport.firePropertyChange("nomGenre", oldGenres, genres);
-    }
-
-    public Genre getFirstGenre() {
-        return firstGenre;
     }
 
     public Chanteur getNomChanteur() {

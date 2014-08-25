@@ -20,6 +20,7 @@ public class StarsRenderer implements TableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         System.err.println(Integer.parseInt(String.valueOf(value)));
         StarRater star = new StarRater(Integer.parseInt(String.valueOf(value)));
+        star.setOpaque(false);
         star.setEnabled(false);
         return star;
     }

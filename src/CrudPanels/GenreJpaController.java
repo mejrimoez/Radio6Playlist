@@ -41,7 +41,7 @@ public class GenreJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Chanson> attachedChansons = new ArrayList<Chanson>();
+            List<Chanson> attachedChansons = new ArrayList<>();
             for (Chanson chansonsChansonToAttach : genre.getChansons()) {
                 chansonsChansonToAttach = em.getReference(chansonsChansonToAttach.getClass(), chansonsChansonToAttach.getNumChanson());
                 attachedChansons.add(chansonsChansonToAttach);
@@ -71,9 +71,9 @@ public class GenreJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Genre persistentGenre = em.find(Genre.class, genre.getNomGenre());
-            Collection<Chanson> chansonsOld = persistentGenre.getChansons();
-            Collection<Chanson> chansonsNew = genre.getChansons();
-            Collection<Chanson> attachedChansonsNew = new ArrayList<Chanson>();
+            List<Chanson> chansonsOld = persistentGenre.getChansons();
+            List<Chanson> chansonsNew = genre.getChansons();
+            List<Chanson> attachedChansonsNew = new ArrayList<>();
             for (Chanson chansonsNewChansonToAttach : chansonsNew) {
                 chansonsNewChansonToAttach = em.getReference(chansonsNewChansonToAttach.getClass(), chansonsNewChansonToAttach.getNumChanson());
                 attachedChansonsNew.add(chansonsNewChansonToAttach);
