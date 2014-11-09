@@ -2831,7 +2831,6 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private void ajoutTitreWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_ajoutTitreWindowStateChanged
         waitDialog.setVisible(true);
         SwingWorker worker = new SwingWorker() {
-
             @Override
             protected Object doInBackground() throws Exception {
                 refreshAllBase();
@@ -2843,7 +2842,6 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             protected void done() {
                 waitDialog.setVisible(false);
             }
-
         };
         worker.addPropertyChangeListener(null);
         worker.execute();
