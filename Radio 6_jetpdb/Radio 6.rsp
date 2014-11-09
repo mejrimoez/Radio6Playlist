@@ -1,0 +1,42 @@
+
+-jetcomponent=10.00
+-jetedition=Evaluation
+-vcode=5
+-sys=C
+-nosmart
+-zimer=0
+-stack=900000
+-LargeAddressAware
+-config=VMProperty:-Djet.gc.heaplimit:0 -Djet.stack.trace
+-config=ClassPath:playlist.jar;lib/eclipselink.jar;lib/javax.persistence_2.1.0.v201304241213.jar;lib/org.eclipse.persistence.jpa.jpql_2.5.2.v20140319-9ad6abd.jar;lib/beansbinding-1.2.1.jar;lib/mysql-connector-java-5.1.23-bin.jar;lib/AbsoluteLayout.jar;lib/jaudiotagger-2.0.4-SNAPSHOT.jar;lib/VFSJFileChooser-0.0.3.jar;lib/commons-vfs-2.0.jar;lib/org-apache-commons-logging.jar
+-config=JETProfile:5
+-config=JETProfileName:1.7.0_55
+-config=RuntimeKind:DESKTOP
+-EmbeddedFileSys=Z:/home/moez/NetBeansProjects/PlaylistRadio6/Radio 6_jetpdb/Radio 6.efs
+-config=MainClass:playlistradio6/AuthentificationUI
+-config=VersionInfo:jet-1000-release (eval, en)
+-config=CompatibilityString:Java SE version: 1.7.0_55; JET update level: 0; CPU architecture: x86
+-name=C:\users\moez\Mes documents\NetBeansProjects\PlaylistRadio6\dist\Radio 6.exe
+Z:\home\moez\NetBeansProjects\PlaylistRadio6\Radio 6_jetpdb\version.res
+
+-entry=ExeEntryPoint
+
+
+-config=HaveSplash:1
+-config=SplashCloseOnTitle:
+-config=SplashCloseOnAWTWindow:1
+-LinkFileAsRData=LINK_SplashPicture:C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/resources/logo.png
+
+
+C:\jet10.0-eval-x86\lib\x86\startup-exe-splash.zip
+
+-config=PackagingOptions:dlls=java;net;nio;awt;fontmanager;zip component_microversions=BC-0
+-ReadLinkInfo=Z:\home\moez\NetBeansProjects\PlaylistRadio6\Radio 6_jetpdb\reorder.li
+Z:\home\moez\NetBeansProjects\PlaylistRadio6\Radio 6_jetpdb\obj.zip
+-Config=RTComponent:XKRN10005.dll
+C:\jet10.0-eval-x86\lib\x86\startup-rtlink.zip
+C:\jet10.0-eval-x86\lib\x86\import32.lib
+C:\users\moez\Mes documents\NetBeansProjects\PlaylistRadio6\resources\logo.ico
+C:\jet10.0-eval-x86\lib\x86\app.res
+-StrictLinkToDLL
+

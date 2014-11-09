@@ -1,0 +1,98 @@
+%%Excelsior JET v10.0 project file
+
+-jpiiproject=Z:\home\moez\NetBeansProjects\PlaylistRadio6\Radio 6.jpn
+
+-compilewithfixedheap-
+-genstackalloc+
+-genstacktrace-
+-global-
+-gui-
+-ignoreclassduplication+
+-ignorememberabsence+
+-inline+
+-multiapp-
+-splashgetfrommanifest-
+
+-apptype=Plain
+-classabsence=HANDLE
+-compilerheap=1744830464
+-inlinelimit=100
+-inlinetolimit=1000
+-javacommandline:=java -jar playlist.jar
+-jetcplastpage:=PageCompile
+-jetrt=Desktop
+-jetvmprop=-Djet.gc.heaplimit:0 -Djet.stack.trace
+-main=playlistradio6/AuthentificationUI
+-outputdir=C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist
+-outputname=Radio 6
+-saprofmode=NONE
+-splash=C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/resources/logo.png
+-stacklimit=900000
+-startupprofile=./Radio 6.startup
+-versioninfocompanyname=Mejri Moez
+-versioninfofiledescription=Radio 6
+-versioninfolegalcopyright=Copyright \x00a9 2014 Mejri Moez
+-versioninfoproductname=Radio 6
+
+
+
+
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/playlist.jar
+  -pack=noncompiled
+  -protect=all
+  -optimize=all
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/eclipselink.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/javax.persistence_2.1.0.v201304241213.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/org.eclipse.persistence.jpa.jpql_2.5.2.v20140319-9ad6abd.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/beansbinding-1.2.1.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/mysql-connector-java-5.1.23-bin.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/AbsoluteLayout.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/jaudiotagger-2.0.4-SNAPSHOT.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/VFSJFileChooser-0.0.3.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/commons-vfs-2.0.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/dist/lib/org-apache-commons-logging.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+
+!module C:/users/moez/Mes documents/NetBeansProjects/PlaylistRadio6/resources/logo.ico
+!module ./Radio 6.usg
+

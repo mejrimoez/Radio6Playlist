@@ -25,11 +25,11 @@ import javax.persistence.Transient;
  * @author moez
  */
 @Entity
-@Table(name = "Genre", catalog = "radio6", schema = "")
+@Table(name = "Genre", catalog = "sql457399", schema = "")
 @NamedQueries({
     @NamedQuery(name = "Genre.findAll", query = "SELECT g FROM Genre g"),
     @NamedQuery(name = "Genre.findByNomGenre", query = "SELECT g FROM Genre g WHERE g.nomGenre = :nomGenre")})
-public class Genre implements Serializable {
+public class Genre implements Serializable, Comparable<Genre> {
 
     @Transient
     private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
@@ -98,6 +98,11 @@ public class Genre implements Serializable {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         changeSupport.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public int compareTo(Genre o) {
+        return getNomGenre().compareTo(o.getNomGenre());
     }
 
 }

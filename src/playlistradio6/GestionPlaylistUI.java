@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2014 moez
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package playlistradio6;
 
@@ -24,13 +36,21 @@ import FileSearch.FileSearch;
 import FileSearch.PlaylistFileFilter;
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import java.awt.Cursor;
+import java.awt.GridLayout;
+import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,12 +58,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.RowFilter;
@@ -52,6 +77,8 @@ import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbFile;
 
 /**
  *
@@ -157,8 +184,31 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         menuGenresAjout = new javax.swing.JPopupMenu();
         listeFichiers = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : org.jdesktop.observablecollections.ObservableCollections.observableList(new java.util.LinkedList<Chanson>());
         menuGenresModif = new javax.swing.JPopupMenu();
+        repertoireServeur = new javax.swing.JFileChooser();
         waitDialog = new javax.swing.JDialog();
         jProgressBar1 = new javax.swing.JProgressBar();
+        configServeurDialog = new javax.swing.JDialog();
+        jLabel26 = new javax.swing.JLabel();
+        musicPath = new javax.swing.JTextField();
+        browseServ = new javax.swing.JButton();
+        cancelButton2 = new javax.swing.JButton();
+        okButton = new javax.swing.JButton();
+        serverCredentialsDialog = new javax.swing.JDialog();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        credentialDomain = new javax.swing.JTextField();
+        crendentialUser = new javax.swing.JTextField();
+        credentialPassword = new javax.swing.JPasswordField();
+        credentialOk = new javax.swing.JButton();
+        credentialCancel = new javax.swing.JButton();
+        automaticPlaylistChoice = new javax.swing.JDialog();
+        jPanel2 = new CustomComboBoxGroup();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jLabel30 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel31 = new javax.swing.JLabel();
         contenu = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         titresSansInfos = new javax.swing.JList();
@@ -193,6 +243,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         automaticRadio = new javax.swing.JRadioButton();
         manualRadio = new javax.swing.JRadioButton();
+        jButton5 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         chansonsTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
@@ -899,849 +950,1094 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         MenuScroller.setScrollerFor(menuGenresModif, 5, 50, 0, 0);
         menuGenresModif.setInvoker(modifGenres);
 
-        waitDialog.setAlwaysOnTop(true);
-        waitDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        waitDialog.setType(java.awt.Window.Type.POPUP);
+        repertoireServeur.setApproveButtonText("Ouvrir");
+        repertoireServeur.setApproveButtonToolTipText("");
+        repertoireServeur.setCurrentDirectory(new java.io.File("/home/moez/\\\\serveur\\"));
+            repertoireServeur.setDialogTitle("Ouvrir Liste des chansons");
+            repertoireServeur.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 
-        jProgressBar1.setIndeterminate(true);
+            waitDialog.setAlwaysOnTop(true);
+            waitDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+            waitDialog.setType(java.awt.Window.Type.POPUP);
 
-        javax.swing.GroupLayout waitDialogLayout = new javax.swing.GroupLayout(waitDialog.getContentPane());
-        waitDialog.getContentPane().setLayout(waitDialogLayout);
-        waitDialogLayout.setHorizontalGroup(
-            waitDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(waitDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            jProgressBar1.setIndeterminate(true);
+
+            javax.swing.GroupLayout waitDialogLayout = new javax.swing.GroupLayout(waitDialog.getContentPane());
+            waitDialog.getContentPane().setLayout(waitDialogLayout);
+            waitDialogLayout.setHorizontalGroup(
+                waitDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(waitDialogLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            waitDialogLayout.setVerticalGroup(
+                waitDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(waitDialogLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                    .addContainerGap())
+            );
+
+            configServeurDialog.setLocationRelativeTo(this);
+            configServeurDialog.setTitle("Choix répertoire de musique");
+            configServeurDialog.setAlwaysOnTop(true);
+            configServeurDialog.setMinimumSize(new java.awt.Dimension(391, 160));
+            configServeurDialog.setResizable(false);
+
+            jLabel26.setText("Chemin de la source de chansons (serveur) :");
+
+            musicPath.addKeyListener(new java.awt.event.KeyAdapter() {
+                public void keyTyped(java.awt.event.KeyEvent evt) {
+                    musicPathKeyTyped(evt);
+                }
+            });
+
+            browseServ.setText("Parcourir");
+            browseServ.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    browseServActionPerformed(evt);
+                }
+            });
+
+            cancelButton2.setText("Config. par défaut");
+            cancelButton2.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    cancelButton2ActionPerformed(evt);
+                }
+            });
+
+            okButton.setText("OK");
+            okButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    okButtonActionPerformed(evt);
+                }
+            });
+
+            javax.swing.GroupLayout configServeurDialogLayout = new javax.swing.GroupLayout(configServeurDialog.getContentPane());
+            configServeurDialog.getContentPane().setLayout(configServeurDialogLayout);
+            configServeurDialogLayout.setHorizontalGroup(
+                configServeurDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(configServeurDialogLayout.createSequentialGroup()
+                    .addGap(22, 22, 22)
+                    .addGroup(configServeurDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel26)
+                        .addGroup(configServeurDialogLayout.createSequentialGroup()
+                            .addGap(18, 18, 18)
+                            .addGroup(configServeurDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(configServeurDialogLayout.createSequentialGroup()
+                                    .addComponent(cancelButton2)
+                                    .addGap(63, 63, 63)
+                                    .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(configServeurDialogLayout.createSequentialGroup()
+                                    .addComponent(musicPath, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(browseServ)))))
+                    .addContainerGap(21, Short.MAX_VALUE))
+            );
+            configServeurDialogLayout.setVerticalGroup(
+                configServeurDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(configServeurDialogLayout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(jLabel26)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(configServeurDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(musicPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(browseServ))
+                    .addGap(18, 18, 18)
+                    .addGroup(configServeurDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cancelButton2)
+                        .addComponent(okButton))
+                    .addContainerGap(15, Short.MAX_VALUE))
+            );
+
+            serverCredentialsDialog.setTitle("Informations du serveur");
+
+            jLabel27.setText("Domaine :");
+
+            jLabel28.setText("Utilisateur :");
+
+            jLabel29.setText("Mot de passe :");
+
+            credentialOk.setText("OK");
+            credentialOk.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    credentialOkActionPerformed(evt);
+                }
+            });
+
+            credentialCancel.setText("Annuler");
+            credentialCancel.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    credentialCancelActionPerformed(evt);
+                }
+            });
+
+            javax.swing.GroupLayout serverCredentialsDialogLayout = new javax.swing.GroupLayout(serverCredentialsDialog.getContentPane());
+            serverCredentialsDialog.getContentPane().setLayout(serverCredentialsDialogLayout);
+            serverCredentialsDialogLayout.setHorizontalGroup(
+                serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(serverCredentialsDialogLayout.createSequentialGroup()
+                    .addGroup(serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(credentialPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(crendentialUser, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(serverCredentialsDialogLayout.createSequentialGroup()
+                                    .addGap(30, 30, 30)
+                                    .addGroup(serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel29)
+                                        .addComponent(jLabel28)
+                                        .addComponent(jLabel27))
+                                    .addGap(105, 105, 105))
+                                .addGroup(serverCredentialsDialogLayout.createSequentialGroup()
+                                    .addGap(118, 118, 118)
+                                    .addComponent(credentialDomain, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(serverCredentialsDialogLayout.createSequentialGroup()
+                            .addGap(91, 91, 91)
+                            .addComponent(credentialOk, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(29, 29, 29)
+                            .addComponent(credentialCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap(64, Short.MAX_VALUE))
+            );
+            serverCredentialsDialogLayout.setVerticalGroup(
+                serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(serverCredentialsDialogLayout.createSequentialGroup()
+                    .addGap(23, 23, 23)
+                    .addComponent(jLabel27)
+                    .addGap(2, 2, 2)
+                    .addComponent(credentialDomain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(22, 22, 22)
+                    .addComponent(jLabel28)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(crendentialUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(25, 25, 25)
+                    .addComponent(jLabel29)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(credentialPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(serverCredentialsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(credentialOk)
+                        .addComponent(credentialCancel))
+                    .addContainerGap(15, Short.MAX_VALUE))
+            );
+
+            automaticPlaylistChoice.setLocationRelativeTo(null);
+            automaticPlaylistChoice.setTitle("Préférences de chansons");
+            automaticPlaylistChoice.revalidate();
+
+            javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+            jPanel2.setLayout(jPanel2Layout);
+            jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 367, Short.MAX_VALUE)
+            );
+            jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 0, Short.MAX_VALUE)
+            );
+
+            jButton3.setText("OK");
+            jButton3.setPreferredSize(new java.awt.Dimension(76, 27));
+            jButton3.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton3ActionPerformed(evt);
+                }
+            });
+
+            jButton4.setText("Annuler");
+            jButton4.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton4ActionPerformed(evt);
+                }
+            });
+
+            jLabel30.setText("Nombre de chansons du playlist:");
+
+            jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10", "20", "30", "40", "50" }));
+            jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    jComboBox1ItemStateChanged(evt);
+                }
+            });
+
+            jLabel31.setText("Il vous reste "+(CustomComboBox.taillePlaylist - CustomComboBox.somme)+" chansons");
+
+            javax.swing.GroupLayout automaticPlaylistChoiceLayout = new javax.swing.GroupLayout(automaticPlaylistChoice.getContentPane());
+            automaticPlaylistChoice.getContentPane().setLayout(automaticPlaylistChoiceLayout);
+            automaticPlaylistChoiceLayout.setHorizontalGroup(
+                automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
+                    .addGap(25, 25, 25)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(30, 30, 30))
+                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
+                    .addGap(55, 55, 55)
+                    .addComponent(jLabel30)
+                    .addGap(28, 28, 28)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(73, Short.MAX_VALUE))
+                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
+                    .addGap(94, 94, 94)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4)
+                    .addGap(89, 89, 89))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, automaticPlaylistChoiceLayout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel31)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            automaticPlaylistChoiceLayout.setVerticalGroup(
+                automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel30)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(16, 16, 16)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(15, 15, 15)
+                    .addComponent(jLabel31)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton4))
+                    .addContainerGap())
+            );
+
+            nbMax = Integer.parseInt(String.valueOf(jComboBox1.getSelectedItem())) ;
+            rest = nbMax;
+
+            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+            setTitle("Radio 6 | playlists");
+            setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            setIconImage(new ImageIcon(getClass().getResource("/logofr.png")).getImage());
+            addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+                public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                    formWindowGainedFocus(evt);
+                }
+                public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                }
+            });
+            addWindowListener(new java.awt.event.WindowAdapter() {
+                public void windowClosing(java.awt.event.WindowEvent evt) {
+                    formWindowClosing(evt);
+                }
+            });
+
+            contenu.setPreferredSize(new java.awt.Dimension(800, 558));
+            contenu.setVisible(false);
+            contenu.setEnabled(false);
+
+            DefaultListModel<Chanson> model = new DefaultListModel<>();
+            for (Object s : listeFichiers)
+            model.addElement((Chanson)s);
+            titresSansInfos.setModel(model);
+            jScrollPane2.setViewportView(titresSansInfos);
+
+            jLabel4.setFont(new java.awt.Font("DejaVu Sans", 3, 14)); // NOI18N
+            jLabel4.setText("Liste sans informations");
+
+            infosChans.setText("Informations sur la chanson");
+
+            binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titresSansInfos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), infosChans, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+            bindingGroup.addBinding(binding);
+
+            infosChans.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    infosChansActionPerformed(evt);
+                }
+            });
+
+            tableChansons.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+            org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChansons, tableChansons);
+            org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
+            columnBinding.setColumnName("N°");
+            columnBinding.setColumnClass(Integer.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanson}"));
+            columnBinding.setColumnName("Chanson");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanteur}"));
+            columnBinding.setColumnName("Chanteur");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomPays}"));
+            columnBinding.setColumnName("Pays");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomSymbole}"));
+            columnBinding.setColumnName("Symbole");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${genres}"));
+            columnBinding.setColumnName("Genres");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomTheme}"));
+            columnBinding.setColumnName("Theme");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${periode}"));
+            columnBinding.setColumnName("Période");
+            columnBinding.setColumnClass(Integer.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${classification}"));
+            columnBinding.setColumnName("Classification");
+            columnBinding.setEditable(false);
+            bindingGroup.addBinding(jTableBinding);
+            jTableBinding.bind();
+            jScrollPane1.setViewportView(tableChansons);
+            tableChansons.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+            if (tableChansons.getColumnModel().getColumnCount() > 0) {
+                tableChansons.getColumnModel().getColumn(0).setResizable(false);
+                tableChansons.getColumnModel().getColumn(0).setPreferredWidth(5);
+                tableChansons.getColumnModel().getColumn(1).setMinWidth(180);
+                tableChansons.getColumnModel().getColumn(1).setPreferredWidth(150);
+                tableChansons.getColumnModel().getColumn(1).setMaxWidth(200);
+                tableChansons.getColumnModel().getColumn(4).setMinWidth(80);
+                tableChansons.getColumnModel().getColumn(4).setPreferredWidth(90);
+                tableChansons.getColumnModel().getColumn(4).setMaxWidth(100);
+                tableChansons.getColumnModel().getColumn(8).setCellRenderer(new renderer.StarsRenderer());
+            }
+
+            modifInfoChans.setText("Modifier la chanson");
+
+            binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tableChansons, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), modifInfoChans, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+            bindingGroup.addBinding(binding);
+
+            modifInfoChans.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    modifInfoChansActionPerformed(evt);
+                }
+            });
+
+            javax.swing.GroupLayout contenuLayout = new javax.swing.GroupLayout(contenu);
+            contenu.setLayout(contenuLayout);
+            contenuLayout.setHorizontalGroup(
+                contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenuLayout.createSequentialGroup()
+                    .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(contenuLayout.createSequentialGroup()
+                            .addGap(64, 64, 64)
+                            .addComponent(jLabel4))
+                        .addGroup(contenuLayout.createSequentialGroup()
+                            .addGap(8, 8, 8)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(10, 10, 10))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenuLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(modifInfoChans)
+                    .addGap(473, 473, 473))
+                .addGroup(contenuLayout.createSequentialGroup()
+                    .addGap(82, 82, 82)
+                    .addComponent(infosChans)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            contenuLayout.setVerticalGroup(
+                contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenuLayout.createSequentialGroup()
+                    .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, contenuLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(modifInfoChans)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, contenuLayout.createSequentialGroup()
+                            .addGap(44, 44, 44)
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(infosChans)
+                    .addGap(50, 50, 50))
+            );
+
+            contenu1.setPreferredSize(new java.awt.Dimension(800, 558));
+            contenu1.setVisible(false);
+            contenu1.setEnabled(false);
+
+            jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+            jPanel5.setMinimumSize(new java.awt.Dimension(277, 343));
+            jPanel5.setPreferredSize(new java.awt.Dimension(345, 252));
+
+            chanteurCheckBox1.setText("Chanteur");
+            chanteurCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    chanteurCheckBox1ItemStateChanged(evt);
+                }
+            });
+
+            jLabel6.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
+            jLabel6.setText("Critères de sélection :");
+
+            jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChanteurs, listeChanteur1, "chanteur");
+            bindingGroup.addBinding(jComboBoxBinding);
+
+            listeChanteur1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    listeChanteur1ItemStateChanged(evt);
+                }
+            });
+
+            paysCheckbox1.setText("Pays");
+            paysCheckbox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    paysCheckbox1ItemStateChanged(evt);
+                }
+            });
+
+            jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listPays, listePays1, "pays");
+            bindingGroup.addBinding(jComboBoxBinding);
+
+            listePays1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    listePays1ItemStateChanged(evt);
+                }
+            });
+
+            symboleCheckbox1.setText("Symbole");
+            symboleCheckbox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    symboleCheckbox1ItemStateChanged(evt);
+                }
+            });
+
+            jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listSymboles, listeSymbole1, "symbole");
+            bindingGroup.addBinding(jComboBoxBinding);
+
+            listeSymbole1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    listeSymbole1ItemStateChanged(evt);
+                }
+            });
+
+            themeCheckbox1.setText("Thème");
+            themeCheckbox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    themeCheckbox1ItemStateChanged(evt);
+                }
+            });
+
+            jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listThemes, listeTheme1, "theme");
+            bindingGroup.addBinding(jComboBoxBinding);
+
+            listeTheme1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    listeTheme1ItemStateChanged(evt);
+                }
+            });
+            listeTheme1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    listeTheme1ActionPerformed(evt);
+                }
+            });
+
+            genreCheckbox1.setText("Genre");
+            genreCheckbox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    genreCheckbox1ItemStateChanged(evt);
+                }
+            });
+
+            periodeCheckbox1.setText("Période");
+            periodeCheckbox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    periodeCheckbox1ItemStateChanged(evt);
+                }
+            });
+
+            periodeSpinner1.setModel(new javax.swing.SpinnerNumberModel(2000, 1900, 9000, 5));
+            periodeSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+                public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                    periodeSpinner1StateChanged(evt);
+                }
+            });
+
+            ratingCheckbox1.setText("Classement");
+            ratingCheckbox1.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    ratingCheckbox1ItemStateChanged(evt);
+                }
+            });
+
+            ((StarRater)ratingPanel1).addStarListener(new StarRater.StarListener() {
+                public void handleSelection(int selection)
+                {
+                    //JOptionPane.showMessageDialog(null, "Selection "+selection);
+                    //     ratingCheckbox1.setSelected(true);
+                    refreshFilters();
+                }
+            });
+
+            javax.swing.GroupLayout ratingPanel1Layout = new javax.swing.GroupLayout(ratingPanel1);
+            ratingPanel1.setLayout(ratingPanel1Layout);
+            ratingPanel1Layout.setHorizontalGroup(
+                ratingPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 0, Short.MAX_VALUE)
+            );
+            ratingPanel1Layout.setVerticalGroup(
+                ratingPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 43, Short.MAX_VALUE)
+            );
+
+            chansonCheckBox.setText("Chanson");
+            chansonCheckBox.addItemListener(new java.awt.event.ItemListener() {
+                public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                    checkBoxItemChanged(evt);
+                }
+            });
+
+            chansonTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+                public void keyReleased(java.awt.event.KeyEvent evt) {
+                    chansonTextFieldKeyReleased(evt);
+                }
+            });
+
+            jLabel24.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
+            jLabel24.setText("Mode de séléction :");
+
+            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLabel24)
+                    .addContainerGap(57, Short.MAX_VALUE))
+            );
+            jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGap(0, 8, Short.MAX_VALUE)
+                    .addComponent(jLabel24))
+            );
+
+            jLabel25.setText("Durée du playlist (minutes) :");
+
+            jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
+
+            binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, automaticRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jSpinner1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+            bindingGroup.addBinding(binding);
+
+            jButton1.setText("Choisir playlist Autmatiquement");
+
+            binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, automaticRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+            bindingGroup.addBinding(binding);
+
+            jButton1.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton1ActionPerformed(evt);
+                }
+            });
+
+            jButton2.setText("...");
+            jButton2.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton2ActionPerformed(evt);
+                }
+            });
+
+            radioButtonGroup.add(automaticRadio);
+            automaticRadio.setText("Automatique");
+            automaticRadio.setToolTipText("sélection automatique");
+
+            radioButtonGroup.add(manualRadio);
+            manualRadio.setSelected(true);
+            manualRadio.setText("Manuelle");
+            manualRadio.setToolTipText("sélection manuelle");
+
+            jButton5.setText("auto");
+            jButton5.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    jButton5ActionPerformed(evt);
+                }
+            });
+
+            javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+            jPanel5.setLayout(jPanel5Layout);
+            jPanel5Layout.setHorizontalGroup(
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                                        .addComponent(automaticRadio)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(manualRadio))))
+                            .addGap(64, 82, Short.MAX_VALUE))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(chanteurCheckBox1)
+                                        .addComponent(paysCheckbox1)
+                                        .addComponent(themeCheckbox1)
+                                        .addComponent(symboleCheckbox1)
+                                        .addComponent(genreCheckbox1)
+                                        .addComponent(periodeCheckbox1)
+                                        .addComponent(ratingCheckbox1)
+                                        .addComponent(chansonCheckBox))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(listeChanteur1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(chansonTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(listePays1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(listeSymbole1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(listeTheme1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(periodeSpinner1, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(ratingPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jButton1)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGap(22, 22, 22))))
+                .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGap(44, 44, 44)
+                            .addComponent(jLabel6))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGap(77, 77, 77)
+                            .addComponent(jButton5)))
+                    .addGap(0, 0, Short.MAX_VALUE))
+            );
+            jPanel5Layout.setVerticalGroup(
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGap(15, 15, 15)
+                    .addComponent(jLabel6)
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(chansonCheckBox)
+                        .addComponent(chansonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(chanteurCheckBox1)
+                        .addComponent(listeChanteur1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(paysCheckbox1)
+                        .addComponent(listePays1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(symboleCheckbox1)
+                        .addComponent(listeSymbole1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(themeCheckbox1)
+                        .addComponent(listeTheme1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(genreCheckbox1)
+                        .addComponent(jButton2))
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(periodeCheckbox1)
+                        .addComponent(periodeSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(ratingCheckbox1)
+                        .addComponent(ratingPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(44, 44, 44)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(manualRadio)
+                        .addComponent(automaticRadio))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel25)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButton5)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+
+            chansonsTable.setAutoCreateRowSorter(true);
+            chansonsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+            jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChansons, chansonsTable);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
+            columnBinding.setColumnName("N°");
+            columnBinding.setColumnClass(Integer.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanson}"));
+            columnBinding.setColumnName("Chanson");
+            columnBinding.setColumnClass(String.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanteur}"));
+            columnBinding.setColumnName("Chanteur");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomPays}"));
+            columnBinding.setColumnName("Pays");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${genres}"));
+            columnBinding.setColumnName("Genres");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomTheme}"));
+            columnBinding.setColumnName("Theme");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomSymbole}"));
+            columnBinding.setColumnName("Symbole");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${periode}"));
+            columnBinding.setColumnName("Période");
+            columnBinding.setColumnClass(Integer.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${classification}"));
+            columnBinding.setColumnName("Classification");
+            columnBinding.setEditable(false);
+            bindingGroup.addBinding(jTableBinding);
+            jTableBinding.bind();
+            jScrollPane4.setViewportView(chansonsTable);
+            if (chansonsTable.getColumnModel().getColumnCount() > 0) {
+                chansonsTable.getColumnModel().getColumn(0).setResizable(false);
+                chansonsTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+                chansonsTable.getColumnModel().getColumn(5).setResizable(false);
+                chansonsTable.getColumnModel().getColumn(5).setPreferredWidth(20);
+                chansonsTable.getColumnModel().getColumn(6).setResizable(false);
+                chansonsTable.getColumnModel().getColumn(6).setPreferredWidth(10);
+                chansonsTable.getColumnModel().getColumn(7).setResizable(false);
+                chansonsTable.getColumnModel().getColumn(7).setPreferredWidth(10);
+                chansonsTable.getColumnModel().getColumn(8).setCellRenderer(new renderer.StarsRenderer());
+            }
+
+            jLabel3.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
+            jLabel3.setText("Tous les Chansons");
+
+            jScrollPane5.setPreferredSize(new java.awt.Dimension(456, 206));
+
+            playlistTable.setAutoCreateRowSorter(true);
+
+            jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, playlist, playlistTable);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
+            columnBinding.setColumnName("N°");
+            columnBinding.setColumnClass(Integer.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanson}"));
+            columnBinding.setColumnName("Chanson");
+            columnBinding.setColumnClass(String.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanteur}"));
+            columnBinding.setColumnName("Chanteur");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomPays}"));
+            columnBinding.setColumnName("Pays");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${genres}"));
+            columnBinding.setColumnName("Genres");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomTheme}"));
+            columnBinding.setColumnName("Theme");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomSymbole}"));
+            columnBinding.setColumnName("Symbole");
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${periode}"));
+            columnBinding.setColumnName("Période");
+            columnBinding.setColumnClass(Integer.class);
+            columnBinding.setEditable(false);
+            columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${classification}"));
+            columnBinding.setColumnName("Classisfication");
+            columnBinding.setEditable(false);
+            bindingGroup.addBinding(jTableBinding);
+            jTableBinding.bind();
+            jScrollPane5.setViewportView(playlistTable);
+            if (playlistTable.getColumnModel().getColumnCount() > 0) {
+                playlistTable.getColumnModel().getColumn(0).setResizable(false);
+                playlistTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+                playlistTable.getColumnModel().getColumn(5).setResizable(false);
+                playlistTable.getColumnModel().getColumn(5).setPreferredWidth(20);
+                playlistTable.getColumnModel().getColumn(6).setResizable(false);
+                playlistTable.getColumnModel().getColumn(6).setPreferredWidth(10);
+                playlistTable.getColumnModel().getColumn(7).setResizable(false);
+                playlistTable.getColumnModel().getColumn(7).setPreferredWidth(30);
+                playlistTable.getColumnModel().getColumn(8).setCellRenderer(new renderer.StarsRenderer());
+            }
+            playlistTable.getModel ()
+            .addTableModelListener(new TableModelListener() {
+
+                @Override
+                public void tableChanged(TableModelEvent e)
+                {
+                    //        JOptionPane.showMessageDialog(null, e.getFirstRow());
+                    if(playlist.isEmpty())
+                    {
+                        extractSongs.setEnabled(false);
+                    }else {
+                        extractSongs.setEnabled(true);
+                    }
+
+                    editPlaylist = true;
+
+                }
+            }
         );
-        waitDialogLayout.setVerticalGroup(
-            waitDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(waitDialogLayout.createSequentialGroup()
+
+        jLabel5.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
+        jLabel5.setText("Playlist Sélectionné");
+
+        selectSongButton.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
+        selectSongButton.setText("↓");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, chansonsTable, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), selectSongButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        selectSongButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectSongButtonActionPerformed(evt);
+            }
+        });
+
+        deselectSongButton.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
+        deselectSongButton.setText("↑");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, playlistTable, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), deselectSongButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        deselectSongButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deselectSongButtonActionPerformed(evt);
+            }
+        });
+
+        extractSongs.setText("Extraire chansons vers un dossier");
+        extractSongs.setEnabled(false);
+        extractSongs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractSongsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout contenu1Layout = new javax.swing.GroupLayout(contenu1);
+        contenu1.setLayout(contenu1Layout);
+        contenu1Layout.setHorizontalGroup(
+            contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contenu1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
+                        .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(deselectSongButton)
+                        .addGap(129, 129, 129)
+                        .addComponent(jLabel5)
+                        .addGap(100, 100, 100)
+                        .addComponent(selectSongButton)
+                        .addGap(314, 314, 314))
+                    .addGroup(contenu1Layout.createSequentialGroup()
+                        .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(contenu1Layout.createSequentialGroup()
+                                .addGap(384, 384, 384)
+                                .addComponent(jLabel3))
+                            .addGroup(contenu1Layout.createSequentialGroup()
+                                .addGap(355, 355, 355)
+                                .addComponent(extractSongs)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        contenu1Layout.setVerticalGroup(
+            contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contenu1Layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(contenu1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(selectSongButton)
+                            .addComponent(deselectSongButton)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addComponent(extractSongs)
                 .addContainerGap())
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Radio 6 | playlists");
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setIconImage(new ImageIcon(getClass().getResource("/logofr.png")).getImage());
-        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
-            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
-                formWindowGainedFocus(evt);
-            }
-            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+        menuFichier.setText("Fichier");
+
+        newProjectItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        newProjectItem.setText("Nouvelle Playlist...");
+        newProjectItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newProjectItemActionPerformed(evt);
             }
         });
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
+        menuFichier.add(newProjectItem);
+
+        openFileItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openFileItem.setText("Ouvrir Playlist...");
+        openFileItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OpenActionPerformed(evt);
             }
         });
+        menuFichier.add(openFileItem);
+        menuFichier.add(jSeparator2);
 
-        contenu.setPreferredSize(new java.awt.Dimension(800, 558));
-        contenu.setVisible(false);
-        contenu.setEnabled(false);
+        infoSongItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        infoSongItem.setText("Entrer Informations sur les chansons");
+        infoSongItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoSongItemActionPerformed(evt);
+            }
+        });
+        menuFichier.add(infoSongItem);
 
-        DefaultListModel<Chanson> model = new DefaultListModel<>();
-        for (Object s : listeFichiers)
-        model.addElement((Chanson)s);
-        titresSansInfos.setModel(model);
-        jScrollPane2.setViewportView(titresSansInfos);
+        saveFileItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        saveFileItem.setText("Enregistrer Playlist");
 
-        jLabel4.setFont(new java.awt.Font("DejaVu Sans", 3, 14)); // NOI18N
-        jLabel4.setText("Liste sans informations");
-
-        infosChans.setText("Informations sur la chanson");
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, titresSansInfos, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), infosChans, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, contenu1, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), saveFileItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        infosChans.addActionListener(new java.awt.event.ActionListener() {
+        saveFileItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                infosChansActionPerformed(evt);
+                saveFileItemActionPerformed(evt);
             }
         });
+        menuFichier.add(saveFileItem);
 
-        tableChansons.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        exportFilesItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        exportFilesItem.setText("Exporter Playlist (vers Direct)");
 
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChansons, tableChansons);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
-        columnBinding.setColumnName("N°");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanson}"));
-        columnBinding.setColumnName("Chanson");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanteur}"));
-        columnBinding.setColumnName("Chanteur");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomPays}"));
-        columnBinding.setColumnName("Pays");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomSymbole}"));
-        columnBinding.setColumnName("Symbole");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${genres}"));
-        columnBinding.setColumnName("Genres");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomTheme}"));
-        columnBinding.setColumnName("Theme");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${periode}"));
-        columnBinding.setColumnName("Période");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${classification}"));
-        columnBinding.setColumnName("Classification");
-        columnBinding.setEditable(false);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
-        jScrollPane1.setViewportView(tableChansons);
-        tableChansons.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        if (tableChansons.getColumnModel().getColumnCount() > 0) {
-            tableChansons.getColumnModel().getColumn(0).setResizable(false);
-            tableChansons.getColumnModel().getColumn(0).setPreferredWidth(5);
-            tableChansons.getColumnModel().getColumn(1).setMinWidth(180);
-            tableChansons.getColumnModel().getColumn(1).setPreferredWidth(150);
-            tableChansons.getColumnModel().getColumn(1).setMaxWidth(200);
-            tableChansons.getColumnModel().getColumn(4).setMinWidth(80);
-            tableChansons.getColumnModel().getColumn(4).setPreferredWidth(90);
-            tableChansons.getColumnModel().getColumn(4).setMaxWidth(100);
-            tableChansons.getColumnModel().getColumn(8).setCellRenderer(new renderer.StarsRenderer());
-        }
-
-        modifInfoChans.setText("Modifier la chanson");
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tableChansons, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), modifInfoChans, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, contenu1, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), exportFilesItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        modifInfoChans.addActionListener(new java.awt.event.ActionListener() {
+        exportFilesItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifInfoChansActionPerformed(evt);
+                exportFilesItemActionPerformed(evt);
             }
         });
+        menuFichier.add(exportFilesItem);
+        menuFichier.add(jSeparator1);
 
-        javax.swing.GroupLayout contenuLayout = new javax.swing.GroupLayout(contenu);
-        contenu.setLayout(contenuLayout);
-        contenuLayout.setHorizontalGroup(
-            contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(contenuLayout.createSequentialGroup()
-                .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(contenuLayout.createSequentialGroup()
-                        .addGap(64, 64, 64)
-                        .addComponent(jLabel4))
-                    .addGroup(contenuLayout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenuLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(modifInfoChans)
-                .addGap(473, 473, 473))
-            .addGroup(contenuLayout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(infosChans)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        contenuLayout.setVerticalGroup(
-            contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenuLayout.createSequentialGroup()
-                .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, contenuLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(modifInfoChans)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, contenuLayout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(infosChans)
-                .addGap(50, 50, 50))
-        );
-
-        contenu1.setPreferredSize(new java.awt.Dimension(800, 558));
-        contenu1.setVisible(false);
-        contenu1.setEnabled(false);
-
-        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel5.setMinimumSize(new java.awt.Dimension(277, 343));
-        jPanel5.setPreferredSize(new java.awt.Dimension(345, 252));
-
-        chanteurCheckBox1.setText("Chanteur");
-        chanteurCheckBox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chanteurCheckBox1ItemStateChanged(evt);
-            }
-        });
-
-        jLabel6.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
-        jLabel6.setText("Critères de sélection :");
-
-        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChanteurs, listeChanteur1, "chanteur");
-        bindingGroup.addBinding(jComboBoxBinding);
-
-        listeChanteur1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeChanteur1ItemStateChanged(evt);
-            }
-        });
-
-        paysCheckbox1.setText("Pays");
-        paysCheckbox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                paysCheckbox1ItemStateChanged(evt);
-            }
-        });
-
-        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listPays, listePays1, "pays");
-        bindingGroup.addBinding(jComboBoxBinding);
-
-        listePays1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listePays1ItemStateChanged(evt);
-            }
-        });
-
-        symboleCheckbox1.setText("Symbole");
-        symboleCheckbox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                symboleCheckbox1ItemStateChanged(evt);
-            }
-        });
-
-        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listSymboles, listeSymbole1, "symbole");
-        bindingGroup.addBinding(jComboBoxBinding);
-
-        listeSymbole1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeSymbole1ItemStateChanged(evt);
-            }
-        });
-
-        themeCheckbox1.setText("Thème");
-        themeCheckbox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                themeCheckbox1ItemStateChanged(evt);
-            }
-        });
-
-        jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listThemes, listeTheme1, "theme");
-        bindingGroup.addBinding(jComboBoxBinding);
-
-        listeTheme1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                listeTheme1ItemStateChanged(evt);
-            }
-        });
-        listeTheme1.addActionListener(new java.awt.event.ActionListener() {
+        closeProjects.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        closeProjects.setText("Fermer Tous les Projets");
+        closeProjects.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                listeTheme1ActionPerformed(evt);
+                closeProjectsActionPerformed(evt);
             }
         });
+        menuFichier.add(closeProjects);
 
-        genreCheckbox1.setText("Genre");
-        genreCheckbox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                genreCheckbox1ItemStateChanged(evt);
-            }
-        });
-
-        periodeCheckbox1.setText("Période");
-        periodeCheckbox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                periodeCheckbox1ItemStateChanged(evt);
-            }
-        });
-
-        periodeSpinner1.setModel(new javax.swing.SpinnerNumberModel(2000, 1900, 9000, 5));
-        periodeSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                periodeSpinner1StateChanged(evt);
-            }
-        });
-
-        ratingCheckbox1.setText("Classement");
-        ratingCheckbox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                ratingCheckbox1ItemStateChanged(evt);
-            }
-        });
-
-        ((StarRater)ratingPanel1).addStarListener(new StarRater.StarListener() {
-            public void handleSelection(int selection)
-            {
-                //JOptionPane.showMessageDialog(null, "Selection "+selection);
-                //     ratingCheckbox1.setSelected(true);
-                refreshFilters();
-            }
-        });
-
-        javax.swing.GroupLayout ratingPanel1Layout = new javax.swing.GroupLayout(ratingPanel1);
-        ratingPanel1.setLayout(ratingPanel1Layout);
-        ratingPanel1Layout.setHorizontalGroup(
-            ratingPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        ratingPanel1Layout.setVerticalGroup(
-            ratingPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 43, Short.MAX_VALUE)
-        );
-
-        chansonCheckBox.setText("Chanson");
-        chansonCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                checkBoxItemChanged(evt);
-            }
-        });
-
-        chansonTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                chansonTextFieldKeyReleased(evt);
-            }
-        });
-
-        jLabel24.setFont(new java.awt.Font("Dialog", 2, 18)); // NOI18N
-        jLabel24.setText("Mode de séléction :");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel24)
-                .addContainerGap(57, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 8, Short.MAX_VALUE)
-                .addComponent(jLabel24))
-        );
-
-        jLabel25.setText("Durée du playlist (minutes) :");
-
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(2), Integer.valueOf(2), null, Integer.valueOf(1)));
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, automaticRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jSpinner1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        jButton1.setText("Choisir playlist Autmatiquement");
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, automaticRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        exitItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        exitItem.setText("Quitter");
+        exitItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                exitItemActionPerformed(evt);
             }
         });
+        menuFichier.add(exitItem);
 
-        jButton2.setText("...");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jMenuBar1.add(menuFichier);
+
+        menuConfig.setText("Configuration");
+        menuConfig.setToolTipText("");
+
+        ConfigServeur.setText("Config, Serveur");
+        ConfigServeur.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                ConfigServeurActionPerformed(evt);
             }
         });
+        menuConfig.add(ConfigServeur);
 
-        radioButtonGroup.add(automaticRadio);
-        automaticRadio.setText("Automatique");
-        automaticRadio.setToolTipText("sélection automatique");
+        ConfigSymbole.setText("Config. symboles");
+        ConfigSymbole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigSymboleActionPerformed(evt);
+            }
+        });
+        menuConfig.add(ConfigSymbole);
 
-        radioButtonGroup.add(manualRadio);
-        manualRadio.setSelected(true);
-        manualRadio.setText("Manuelle");
-        manualRadio.setToolTipText("sélection manuelle");
+        ConfigGenre.setText("Config. genres");
+        ConfigGenre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigGenreActionPerformed(evt);
+            }
+        });
+        menuConfig.add(ConfigGenre);
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                    .addComponent(automaticRadio)
-                                    .addGap(28, 28, 28)
-                                    .addComponent(manualRadio))))
-                        .addGap(64, 82, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chanteurCheckBox1)
-                                    .addComponent(paysCheckbox1)
-                                    .addComponent(themeCheckbox1)
-                                    .addComponent(symboleCheckbox1)
-                                    .addComponent(genreCheckbox1)
-                                    .addComponent(periodeCheckbox1)
-                                    .addComponent(ratingCheckbox1)
-                                    .addComponent(chansonCheckBox))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(listeChanteur1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(chansonTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(listePays1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(listeSymbole1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(listeTheme1, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(periodeSpinner1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ratingPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton1)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(22, 22, 22))))
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addComponent(jLabel6)
-                .addGap(0, 0, Short.MAX_VALUE))
+        ConfigPays.setText("Config. pays");
+        ConfigPays.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigPaysActionPerformed(evt);
+            }
+        });
+        menuConfig.add(ConfigPays);
+
+        ConfigTheme.setText("Config. thème");
+        ConfigTheme.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigThemeActionPerformed(evt);
+            }
+        });
+        menuConfig.add(ConfigTheme);
+
+        ConfigUtilisateurs.setText("Config. utlilsateurs");
+        ConfigUtilisateurs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigUtilisateursActionPerformed(evt);
+            }
+        });
+        menuConfig.add(ConfigUtilisateurs);
+
+        jMenuBar1.add(menuConfig);
+
+        menuAide.setText("Aide");
+
+        AproposItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+        AproposItem.setText("A propos");
+        AproposItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AproposItemActionPerformed(evt);
+            }
+        });
+        menuAide.add(AproposItem);
+
+        jMenuBar1.add(menuAide);
+
+        setJMenuBar(jMenuBar1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
+                .addGap(8, 8, 8))
+            .addComponent(contenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 1325, Short.MAX_VALUE)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jLabel6)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chansonCheckBox)
-                    .addComponent(chansonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chanteurCheckBox1)
-                    .addComponent(listeChanteur1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(paysCheckbox1)
-                    .addComponent(listePays1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(symboleCheckbox1)
-                    .addComponent(listeSymbole1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(themeCheckbox1)
-                    .addComponent(listeTheme1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(genreCheckbox1)
-                    .addComponent(jButton2))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(periodeCheckbox1)
-                    .addComponent(periodeSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ratingCheckbox1)
-                    .addComponent(ratingPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(manualRadio)
-                    .addComponent(automaticRadio))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel25)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addComponent(contenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 761, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
         );
 
-        chansonsTable.setAutoCreateRowSorter(true);
-        chansonsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        bindingGroup.bind();
 
-        jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listChansons, chansonsTable);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
-        columnBinding.setColumnName("N°");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanson}"));
-        columnBinding.setColumnName("Chanson");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanteur}"));
-        columnBinding.setColumnName("Chanteur");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomPays}"));
-        columnBinding.setColumnName("Pays");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${genres}"));
-        columnBinding.setColumnName("Genres");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomTheme}"));
-        columnBinding.setColumnName("Theme");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomSymbole}"));
-        columnBinding.setColumnName("Symbole");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${periode}"));
-        columnBinding.setColumnName("Période");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${classification}"));
-        columnBinding.setColumnName("Classification");
-        columnBinding.setEditable(false);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
-        jScrollPane4.setViewportView(chansonsTable);
-        if (chansonsTable.getColumnModel().getColumnCount() > 0) {
-            chansonsTable.getColumnModel().getColumn(0).setResizable(false);
-            chansonsTable.getColumnModel().getColumn(0).setPreferredWidth(10);
-            chansonsTable.getColumnModel().getColumn(5).setResizable(false);
-            chansonsTable.getColumnModel().getColumn(5).setPreferredWidth(20);
-            chansonsTable.getColumnModel().getColumn(6).setResizable(false);
-            chansonsTable.getColumnModel().getColumn(6).setPreferredWidth(10);
-            chansonsTable.getColumnModel().getColumn(7).setResizable(false);
-            chansonsTable.getColumnModel().getColumn(7).setPreferredWidth(10);
-            chansonsTable.getColumnModel().getColumn(8).setCellRenderer(new renderer.StarsRenderer());
-        }
-
-        jLabel3.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        jLabel3.setText("Tous les Chansons");
-
-        jScrollPane5.setPreferredSize(new java.awt.Dimension(456, 206));
-
-        playlistTable.setAutoCreateRowSorter(true);
-
-        jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, playlist, playlistTable);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${numChanson}"));
-        columnBinding.setColumnName("N°");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanson}"));
-        columnBinding.setColumnName("Chanson");
-        columnBinding.setColumnClass(String.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomChanteur}"));
-        columnBinding.setColumnName("Chanteur");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomPays}"));
-        columnBinding.setColumnName("Pays");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${genres}"));
-        columnBinding.setColumnName("Genres");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomTheme}"));
-        columnBinding.setColumnName("Theme");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomSymbole}"));
-        columnBinding.setColumnName("Symbole");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${periode}"));
-        columnBinding.setColumnName("Période");
-        columnBinding.setColumnClass(Integer.class);
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${longueur}"));
-        columnBinding.setColumnName("Longueur");
-        columnBinding.setEditable(false);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${classification}"));
-        columnBinding.setColumnName("Classisfication");
-        columnBinding.setEditable(false);
-        bindingGroup.addBinding(jTableBinding);
-        jTableBinding.bind();
-        jScrollPane5.setViewportView(playlistTable);
-        if (playlistTable.getColumnModel().getColumnCount() > 0) {
-            playlistTable.getColumnModel().getColumn(0).setResizable(false);
-            playlistTable.getColumnModel().getColumn(0).setPreferredWidth(10);
-            playlistTable.getColumnModel().getColumn(5).setResizable(false);
-            playlistTable.getColumnModel().getColumn(5).setPreferredWidth(20);
-            playlistTable.getColumnModel().getColumn(6).setResizable(false);
-            playlistTable.getColumnModel().getColumn(6).setPreferredWidth(10);
-            playlistTable.getColumnModel().getColumn(7).setResizable(false);
-            playlistTable.getColumnModel().getColumn(7).setPreferredWidth(30);
-            playlistTable.getColumnModel().getColumn(8).setResizable(false);
-            playlistTable.getColumnModel().getColumn(8).setPreferredWidth(10);
-            playlistTable.getColumnModel().getColumn(9).setCellRenderer(new renderer.StarsRenderer());
-        }
-        playlistTable.getModel ()
-        .addTableModelListener(new TableModelListener() {
-
-            @Override
-            public void tableChanged(TableModelEvent e)
-            {
-                //        JOptionPane.showMessageDialog(null, e.getFirstRow());
-                if(playlist.isEmpty())
-                {
-                    extractSongs.setEnabled(false);
-                }else {
-                    extractSongs.setEnabled(true);
-                }
-
-                editPlaylist = true;
-
-            }
-        }
-    );
-
-    jLabel5.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
-    jLabel5.setText("Playlist Sélectionné");
-
-    selectSongButton.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-    selectSongButton.setText("↓");
-
-    binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, chansonsTable, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), selectSongButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-    bindingGroup.addBinding(binding);
-
-    selectSongButton.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            selectSongButtonActionPerformed(evt);
-        }
-    });
-
-    deselectSongButton.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-    deselectSongButton.setText("↑");
-
-    binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, playlistTable, org.jdesktop.beansbinding.ELProperty.create("${selectedElement != null}"), deselectSongButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-    bindingGroup.addBinding(binding);
-
-    deselectSongButton.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            deselectSongButtonActionPerformed(evt);
-        }
-    });
-
-    extractSongs.setText("Extraire chansons vers un dossier");
-    extractSongs.setEnabled(false);
-    extractSongs.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            extractSongsActionPerformed(evt);
-        }
-    });
-
-    javax.swing.GroupLayout contenu1Layout = new javax.swing.GroupLayout(contenu1);
-    contenu1.setLayout(contenu1Layout);
-    contenu1Layout.setHorizontalGroup(
-        contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(contenu1Layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
-                    .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addContainerGap())
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenu1Layout.createSequentialGroup()
-                    .addGap(0, 186, Short.MAX_VALUE)
-                    .addComponent(deselectSongButton)
-                    .addGap(129, 129, 129)
-                    .addComponent(jLabel5)
-                    .addGap(100, 100, 100)
-                    .addComponent(selectSongButton)
-                    .addGap(314, 314, 314))
-                .addGroup(contenu1Layout.createSequentialGroup()
-                    .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(contenu1Layout.createSequentialGroup()
-                            .addGap(384, 384, 384)
-                            .addComponent(jLabel3))
-                        .addGroup(contenu1Layout.createSequentialGroup()
-                            .addGap(355, 355, 355)
-                            .addComponent(extractSongs)))
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-    );
-    contenu1Layout.setVerticalGroup(
-        contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(contenu1Layout.createSequentialGroup()
-            .addGap(34, 34, 34)
-            .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenu1Layout.createSequentialGroup()
-                    .addComponent(jLabel3)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addGroup(contenu1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(selectSongButton)
-                        .addComponent(deselectSongButton)
-                        .addComponent(jLabel5))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-            .addComponent(extractSongs)
-            .addContainerGap())
-    );
-
-    menuFichier.setText("Fichier");
-
-    newProjectItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-    newProjectItem.setText("Nouvelle Playlist...");
-    newProjectItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            newProjectItemActionPerformed(evt);
-        }
-    });
-    menuFichier.add(newProjectItem);
-
-    openFileItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-    openFileItem.setText("Ouvrir Playlist...");
-    openFileItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            OpenActionPerformed(evt);
-        }
-    });
-    menuFichier.add(openFileItem);
-    menuFichier.add(jSeparator2);
-
-    infoSongItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-    infoSongItem.setText("Entrer Informations sur les chansons");
-    infoSongItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            infoSongItemActionPerformed(evt);
-        }
-    });
-    menuFichier.add(infoSongItem);
-
-    saveFileItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-    saveFileItem.setText("Enregistrer Playlist");
-
-    binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, contenu1, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), saveFileItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-    bindingGroup.addBinding(binding);
-
-    saveFileItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            saveFileItemActionPerformed(evt);
-        }
-    });
-    menuFichier.add(saveFileItem);
-
-    exportFilesItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
-    exportFilesItem.setText("Exporter Playlist (vers Direct)");
-
-    binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, contenu1, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), exportFilesItem, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-    bindingGroup.addBinding(binding);
-
-    exportFilesItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            exportFilesItemActionPerformed(evt);
-        }
-    });
-    menuFichier.add(exportFilesItem);
-    menuFichier.add(jSeparator1);
-
-    closeProjects.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
-    closeProjects.setText("Fermer Tous les Projets");
-    closeProjects.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            closeProjectsActionPerformed(evt);
-        }
-    });
-    menuFichier.add(closeProjects);
-
-    exitItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-    exitItem.setText("Quitter");
-    exitItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            exitItemActionPerformed(evt);
-        }
-    });
-    menuFichier.add(exitItem);
-
-    jMenuBar1.add(menuFichier);
-
-    menuConfig.setText("Configuration");
-    menuConfig.setToolTipText("");
-
-    ConfigServeur.setText("Config, Serveur");
-    ConfigServeur.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ConfigServeurActionPerformed(evt);
-        }
-    });
-    menuConfig.add(ConfigServeur);
-
-    ConfigSymbole.setText("Config. symboles");
-    ConfigSymbole.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ConfigSymboleActionPerformed(evt);
-        }
-    });
-    menuConfig.add(ConfigSymbole);
-
-    ConfigGenre.setText("Config. genres");
-    ConfigGenre.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ConfigGenreActionPerformed(evt);
-        }
-    });
-    menuConfig.add(ConfigGenre);
-
-    ConfigPays.setText("Config. pays");
-    ConfigPays.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ConfigPaysActionPerformed(evt);
-        }
-    });
-    menuConfig.add(ConfigPays);
-
-    ConfigTheme.setText("Config. thème");
-    ConfigTheme.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ConfigThemeActionPerformed(evt);
-        }
-    });
-    menuConfig.add(ConfigTheme);
-
-    ConfigUtilisateurs.setText("Config. utlilsateurs");
-    ConfigUtilisateurs.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            ConfigUtilisateursActionPerformed(evt);
-        }
-    });
-    menuConfig.add(ConfigUtilisateurs);
-
-    jMenuBar1.add(menuConfig);
-
-    menuAide.setText("Aide");
-
-    AproposItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
-    AproposItem.setText("A propos");
-    AproposItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            AproposItemActionPerformed(evt);
-        }
-    });
-    menuAide.add(AproposItem);
-
-    jMenuBar1.add(menuAide);
-
-    setJMenuBar(jMenuBar1);
-
-    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-    getContentPane().setLayout(layout);
-    layout.setHorizontalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(layout.createSequentialGroup()
-            .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
-            .addGap(8, 8, 8))
-        .addComponent(contenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 1325, Short.MAX_VALUE)
-    );
-    layout.setVerticalGroup(
-        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(layout.createSequentialGroup()
-            .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(contenu1, javax.swing.GroupLayout.PREFERRED_SIZE, 761, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(27, 27, 27))
-    );
-
-    bindingGroup.bind();
-
-    pack();
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void AproposItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AproposItemActionPerformed
@@ -1754,32 +2050,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_AproposItemActionPerformed
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
-        if (editPlaylist) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // save the playlist file
-                int returnVal = fileSave.showSaveDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
-                        String s = "";
-                        for (int i = 0; i < playlist.size(); i++) {
-                            s += ((Chanson) playlist.get(i)).getNumChanson();
-                            if (i < playlist.size() - 1) {
-                                s += ",";
-                            }
-                        }
-                        fw.write(s);
-                        System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
-                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("Création de Fichier annulée par l'utilisateur.");
-                }
-            } else if (dialogResult == JOptionPane.NO_OPTION) {
-                editPlaylist = false;
-            }
-        }
+        savePlaylistBeforeExit();
         System.exit(0);
     }//GEN-LAST:event_exitItemActionPerformed
 
@@ -1828,44 +2099,54 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         frame.setVisible(true);
     }//GEN-LAST:event_ConfigGenreActionPerformed
 
+    public void showServerConfig() {
+        configServeurDialog.setVisible(true);
+    }
     private void ConfigServeurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigServeurActionPerformed
-        ConfigurationServeur frame = new ConfigurationServeur();
-        frame.setLocationRelativeTo(this);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        configServeurDialog.setVisible(true);
+        configServeurDialog.addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                refreshAllBase();
+
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }//GEN-LAST:event_ConfigServeurActionPerformed
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
 
-        if (editPlaylist) {
-            // afficher un message de confirmation de sauvegarde playlist
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // save the playlist file
-                int returnVal = fileSave.showSaveDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
-                        String s = "";
-                        for (int i = 0; i < playlist.size(); i++) {
-                            s += ((Chanson) playlist.get(i)).getNumChanson();
-                            if (i < playlist.size() - 1) {
-                                s += ",";
-                            }
-                        }
-                        fw.write(s);
-                        System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
-                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("Création de Fichier annulée par l'utilisateur.");
-                }
-            } else if (dialogResult == JOptionPane.NO_OPTION) {
-                editPlaylist = false;
-            }
-
-        }
+        savePlaylistBeforeExit();
 
         int returnVal = fileOpen.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -2192,15 +2473,22 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             e.printStackTrace();
         }
         int numChanson = ((Chanson) listChansons.get(tableChansons.convertRowIndexToModel(tableChansons.getSelectedRow()))).getNumChanson();
-        currentChanson = entityManager1.find(Chanson.class, numChanson);
+        currentChanson
+                = entityManager1.find(Chanson.class, numChanson);
         currentChanson.setNomChanson(nomChanson1.getText());
-        currentChanson.setNomChanteur(new Chanteur(String.valueOf(nomChanteur1.getSelectedItem())));
+        currentChanson.setNomChanteur(
+                new Chanteur(String.valueOf(nomChanteur1.getSelectedItem())));
         currentChanson.setGenres(listeGenresModif);
-        currentChanson.setNomPays(new Pays(String.valueOf(pays1.getSelectedItem())));
-        currentChanson.setNomSymbole(new Symbole(String.valueOf(symbole1.getSelectedItem())));
-        currentChanson.setNomTheme(new Theme(String.valueOf(theme1.getSelectedItem())));
+
+        currentChanson.setNomPays(
+                new Pays(String.valueOf(pays1.getSelectedItem())));
+        currentChanson.setNomSymbole(
+                new Symbole(String.valueOf(symbole1.getSelectedItem())));
+        currentChanson.setNomTheme(
+                new Theme(String.valueOf(theme1.getSelectedItem())));
         currentChanson.setPeriode(Integer.parseInt(String.valueOf(periode1.getValue())));
-        currentChanson.setClassification(((StarRater) rating1).getSelection());
+        currentChanson.setClassification(
+                ((StarRater) rating1).getSelection());
         entityManager1.merge(currentChanson);
         for (Genre g : listeGenresModif) {
             entityManager1.merge(g);
@@ -2213,8 +2501,10 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         currentChanson = null;
+
         // refresh the song List
-        waitDialog.setVisible(true);
+        waitDialog.setVisible(
+                true);
         SwingWorker worker = new SwingWorker() {
 
             @Override
@@ -2230,10 +2520,13 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             }
 
         };
-        worker.addPropertyChangeListener(null);
+
+        worker.addPropertyChangeListener(
+                null);
         worker.execute();
 
-        modifTitre.setVisible(false);
+        modifTitre.setVisible(
+                false);
     }//GEN-LAST:event_boutonmodifActionPerformed
 
     private void cancelButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButton1ActionPerformed
@@ -2299,32 +2592,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_modifInfoChansActionPerformed
 
     private void infoSongItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoSongItemActionPerformed
-        if (editPlaylist) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // save the playlist file
-                int returnVal = fileSave.showSaveDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
-                        String s = "";
-                        for (int i = 0; i < playlist.size(); i++) {
-                            s += ((Chanson) playlist.get(i)).getNumChanson();
-                            if (i < playlist.size() - 1) {
-                                s += ",";
-                            }
-                        }
-                        fw.write(s);
-                        System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
-                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("Création de Fichier annulée par l'utilisateur.");
-                }
-            } else if (dialogResult == JOptionPane.NO_OPTION) {
-                editPlaylist = false;
-            }
-        }
+        savePlaylistBeforeExit();
         initSongs();
         contenu.setVisible(true);
         contenu1.setVisible(false);
@@ -2334,32 +2602,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_infoSongItemActionPerformed
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
-        if (editPlaylist) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // save the playlist file
-                int returnVal = fileSave.showSaveDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
-                        String s = "";
-                        for (int i = 0; i < playlist.size(); i++) {
-                            s += ((Chanson) playlist.get(i)).getNumChanson();
-                            if (i < playlist.size() - 1) {
-                                s += ",";
-                            }
-                        }
-                        fw.write(s);
-                        System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
-                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("Création de Fichier annulée par l'utilisateur.");
-                }
-            } else if (dialogResult == JOptionPane.NO_OPTION) {
-                editPlaylist = false;
-            }
-        } else {
+        savePlaylistBeforeExit();
+        if (!editPlaylist) {
             contenu.setVisible(false);
             contenu1.setVisible(true);
             contenu.setEnabled(false);
@@ -2377,32 +2621,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_ajoutChanteurButtonActionPerformed
 
     private void exportFilesItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFilesItemActionPerformed
-        if (editPlaylist) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // save the playlist file
-                int returnVal = fileSave.showSaveDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
-                        String s = "";
-                        for (int i = 0; i < playlist.size(); i++) {
-                            s += ((Chanson) playlist.get(i)).getNumChanson();
-                            if (i < playlist.size() - 1) {
-                                s += ",";
-                            }
-                        }
-                        fw.write(s);
-                        System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
-                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("Création de Fichier annulée par l'utilisateur.");
-                }
-            } else if (dialogResult == JOptionPane.NO_OPTION) {
-                editPlaylist = false;
-            }
-        }
+        savePlaylistBeforeExit();
 
         int returnVal = fileExport.showSaveDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -2444,15 +2663,22 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                         }
                         // download all files mp3 and place it into folder
                         // TODO authentification for file download !!!!
+
+                        // TODO server authentication
+                        NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("domain", "user", "password");
+
                         for (Object c : playlist) {
                             String filepath = ((Chanson) c).getCheminFichier();
-                            File source = new File(filepath);
+
+                            SmbFile source = new SmbFile(filepath, auth);
+
                             File destination = new File(theDir.getAbsolutePath() + "/" + source.getName());
-                            Files.copy(source.toPath(), destination.toPath());
+
+                            Files.copy(source.getInputStream(), destination.toPath());
                         }
 
                         System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
+                    } catch (HeadlessException | IOException ex) {
                         System.out.println("problem accessing file");
                         JOptionPane.showMessageDialog(null, "Problème d'exportation de fichiers !\n" + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
@@ -2475,32 +2701,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exportFilesItemActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (editPlaylist) {
-            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                // save the playlist file
-                int returnVal = fileSave.showSaveDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
-                        String s = "";
-                        for (int i = 0; i < playlist.size(); i++) {
-                            s += ((Chanson) playlist.get(i)).getNumChanson();
-                            if (i < playlist.size() - 1) {
-                                s += ",";
-                            }
-                        }
-                        fw.write(s);
-                        System.out.println("Susccess !!!");
-                    } catch (Exception ex) {
-                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("Création de Fichier annulée par l'utilisateur.");
-                }
-            } else if (dialogResult == JOptionPane.NO_OPTION) {
-                editPlaylist = false;
-            }
-        }
+        savePlaylistBeforeExit();
 
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
@@ -2673,6 +2874,136 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         modifTitre.setVisible(false);
     }//GEN-LAST:event_modifTitreWindowStateChanged
 
+    private void musicPathKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_musicPathKeyTyped
+        okButton.setEnabled(!musicPath.getText().equals(""));
+    }//GEN-LAST:event_musicPathKeyTyped
+
+    private void browseServActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseServActionPerformed
+        // show the file dialog
+//        VFSJFileChooser.RETURN_TYPE answer = fileChooser.showOpenDialog(null);
+//        // check if a file was selected
+//        if (answer == VFSJFileChooser.RETURN_TYPE.APPROVE) {
+//            final FileObject aFileObject = fileChooser.getSelectedFile();
+//            // remove authentication credentials from the file path
+//            final String safeName = VFSUtils.getFriendlyName(aFileObject.toString());
+//            musicPath.setText(safeName);
+//        }
+
+        int returnVal = repertoireServeur.showOpenDialog(configServeurDialog);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = repertoireServeur.getSelectedFile();
+            try {
+                musicPath.setText(file.getPath());
+            } catch (Exception ex) {
+                System.out.println("problem accessing file" + file.getAbsolutePath());
+                JOptionPane.showMessageDialog(configServeurDialog, "Impossible de trouver le dossier !", "Attention", JOptionPane.WARNING_MESSAGE);
+            }
+        } else {
+            System.out.println("File access cancelled by user.");
+        }
+    }//GEN-LAST:event_browseServActionPerformed
+
+    private void cancelButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButton2ActionPerformed
+        Properties properties = new Properties();
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream("playlist.conf");
+            properties.setProperty("music_folder", "");
+
+            properties.store(out, null);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        configServeurDialog.setVisible(false);
+    }//GEN-LAST:event_cancelButton2ActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        Properties properties = new Properties();
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream("playlist.conf");
+            properties.setProperty("music_folder", musicPath.getText());
+
+            properties.store(out, null);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        configServeurDialog.setVisible(false);
+
+        initSongs();
+
+    }//GEN-LAST:event_okButtonActionPerformed
+
+    private void credentialCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_credentialCancelActionPerformed
+        serverCredentialsDialog.setVisible(false);
+    }//GEN-LAST:event_credentialCancelActionPerformed
+
+    private void credentialOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_credentialOkActionPerformed
+        Properties properties = new Properties();
+
+        try {
+
+            properties.load(new FileInputStream("playlist.conf"));
+            properties.setProperty("server_name", credentialDomain.getText());
+            properties.setProperty("user_name", crendentialUser.getText());
+            properties.setProperty("password", String.copyValueOf(credentialPassword.getPassword()));
+
+            properties.store(new FileOutputStream("playlist.conf"), null);
+        } catch (Exception e) {
+
+        }
+
+    }//GEN-LAST:event_credentialOkActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        automaticPlaylistChoice.revalidate();
+        automaticPlaylistChoice.pack();
+        automaticPlaylistChoice.setLocationRelativeTo(null);
+        automaticPlaylistChoice.setVisible(true);
+
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        automaticPlaylistChoice.setVisible(false);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            CustomComboBox.taillePlaylist = Integer.parseInt(String.valueOf(jComboBox1.getSelectedItem()));
+            jLabel31.setText("Il vous reste " + (CustomComboBox.taillePlaylist - CustomComboBox.somme) + " chansons");
+        }
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (rest != 0) {
+            JOptionPane.showMessageDialog(null, "La formule entrée n'est pas correcte. Veuiller le nombre de chansons par chaque genre !", "Attention", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // les proportions des chansons sont justes
+            // TODO il faut trouver les pourcentages
+
+            // TODO et trouver le nombre de chansons nécessaire pour les ranger automatiquement
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     public void initSongs() {
         // initialize music list
         Properties prop = new Properties();
@@ -2760,6 +3091,37 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
 
     }
 
+    public void savePlaylistBeforeExit() {
+        if (editPlaylist) {
+            // afficher un message de confirmation de sauvegarde playlist
+            int dialogResult = JOptionPane.showConfirmDialog(null, "Voulez-vous sauvegarder la playlist en cours ?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                // save the playlist file
+                int returnVal = fileSave.showSaveDialog(this);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try (FileWriter fw = new FileWriter(fileSave.getSelectedFile() + ".playlist")) {
+                        String s = "";
+                        for (int i = 0; i < playlist.size(); i++) {
+                            s += ((Chanson) playlist.get(i)).getNumChanson();
+                            if (i < playlist.size() - 1) {
+                                s += ",";
+                            }
+                        }
+                        fw.write(s);
+                        System.out.println("Susccess !!!");
+                    } catch (Exception ex) {
+                        System.out.println("Problème d'accès au fichier" + fileSave.getSelectedFile().getAbsolutePath());
+                    }
+                } else {
+                    System.out.println("Création de Fichier annulée par l'utilisateur.");
+                }
+            } else if (dialogResult == JOptionPane.NO_OPTION) {
+                editPlaylist = false;
+            }
+
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -2796,7 +3158,10 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private RowFilter periodeFilter;
     private RowFilter classementFilter;
 
+//    private VFSJFileChooser fileChooser;
     ////////////////////////////////////////////
+    public static int nbMax, rest;
+
     private final List<Genre> listeGenresAjout;
     private final List<Genre> listeGenresModif;
     private final List<Genre> listeFiltreGenres;
@@ -2823,18 +3188,27 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.persistence.Query all_pays_query;
     private javax.persistence.Query all_symbole_query;
     private javax.persistence.Query all_theme_query;
+    private javax.swing.JDialog automaticPlaylistChoice;
     private javax.swing.JRadioButton automaticRadio;
     private javax.swing.JButton boutonAjouter;
     private javax.swing.JButton boutonmodif;
+    private javax.swing.JButton browseServ;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton cancelButton1;
+    private javax.swing.JButton cancelButton2;
     private javax.swing.JCheckBox chansonCheckBox;
     private javax.swing.JTextField chansonTextField;
     private javax.swing.JTable chansonsTable;
     private javax.swing.JCheckBox chanteurCheckBox1;
     private javax.swing.JMenuItem closeProjects;
+    private javax.swing.JDialog configServeurDialog;
     private javax.swing.JPanel contenu;
     private javax.swing.JPanel contenu1;
+    private javax.swing.JButton credentialCancel;
+    private javax.swing.JTextField credentialDomain;
+    private javax.swing.JButton credentialOk;
+    private javax.swing.JPasswordField credentialPassword;
+    private javax.swing.JTextField crendentialUser;
     private javax.swing.JButton deselectSongButton;
     private javax.persistence.EntityManager entityManager1;
     private javax.swing.JMenuItem exitItem;
@@ -2849,6 +3223,10 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JButton infosChans;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2867,7 +3245,13 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2876,6 +3260,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -2885,7 +3270,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSpinner jSpinner1;
-    private java.util.List listChansons;
+    public static java.util.List listChansons;
     private java.util.List listChanteurs;
     private java.util.List listGenres;
     private java.util.List listPays;
@@ -2912,11 +3297,13 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JButton modifSymboleButton;
     private javax.swing.JButton modifThemeButton;
     private javax.swing.JDialog modifTitre;
+    private javax.swing.JTextField musicPath;
     private javax.swing.JMenuItem newProjectItem;
     private javax.swing.JTextField nomChanson;
     private javax.swing.JTextField nomChanson1;
     private javax.swing.JComboBox nomChanteur;
     private javax.swing.JComboBox nomChanteur1;
+    private javax.swing.JButton okButton;
     private javax.swing.JMenuItem openFileItem;
     private javax.swing.JComboBox pays;
     private javax.swing.JComboBox pays1;
@@ -2934,8 +3321,10 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JPanel rating1;
     private javax.swing.JCheckBox ratingCheckbox1;
     private javax.swing.JPanel ratingPanel1;
+    private javax.swing.JFileChooser repertoireServeur;
     private javax.swing.JMenuItem saveFileItem;
     private javax.swing.JButton selectSongButton;
+    private javax.swing.JDialog serverCredentialsDialog;
     private javax.swing.JComboBox symbole;
     private javax.swing.JComboBox symbole1;
     private javax.swing.JCheckBox symboleCheckbox1;

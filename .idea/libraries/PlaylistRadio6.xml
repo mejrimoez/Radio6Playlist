@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="PlaylistRadio6">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Radio6.zip!/" />
+      <root url="jar://$PROJECT_DIR$/VFSJFileChooser-0.0.2_JDK5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

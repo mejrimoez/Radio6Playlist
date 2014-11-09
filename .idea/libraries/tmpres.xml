@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="tmpres">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/javax.persistence_2.1.0.v201304241213__2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/PlaylistRadio6__0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/VFSJFileChooser-0.0.3__8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/jaudiotagger-2.0.4-SNAPSHOT__7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/org.eclipse.persistence.jpa.jpql_2.5.2.v20140319-9ad6abd__3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/eclipselink__1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/AbsoluteLayout__6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/beansbinding-1.2.1__4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/commons-vfs-2.0__9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/mysql-connector-java-5.1.23-bin__5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/org-apache-commons-logging__10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Radio 6_jetpdb/tmpres/playlist__0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

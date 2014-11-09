@@ -22,7 +22,7 @@ import javax.persistence.Transient;
  * @author moez
  */
 @Entity
-@Table(name = "Symbole", catalog = "radio6", schema = "")
+@Table(name = "Symbole", catalog = "sql457399", schema = "")
 @NamedQueries({
     @NamedQuery(name = "Symbole.findAll", query = "SELECT s FROM Symbole s"),
     @NamedQuery(name = "Symbole.findByNomSymbole", query = "SELECT s FROM Symbole s WHERE s.nomSymbole = :nomSymbole")})

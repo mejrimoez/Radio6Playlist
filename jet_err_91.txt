@@ -1,0 +1,103 @@
+
+JET RUNTIME HAS DETECTED UNRECOVERABLE ERROR: runtime error at com/excelsior/jet/runtime/os/OSThread.java:200
+Unexpected OS failure: GetThreadContext() failed (Accès refusé)
+Please, contact Excelsior Support at <java@excelsior-usa.com>.
+
+PID 91, TID 86
+
+Version Information:
+
+  Java version: 1.7.0_55
+  Excelsior JET 10.00 Evaluation edition
+  JET Profile: Java SE version: 1.7.0_55; JET update level: 0; CPU architecture: amd64
+  Runtime: Desktop
+  CPU features: cmov mmx sse sse2 sse3 ssse3 sse4.1 sse4.2 avx popcnt cx8 cx16
+
+Options and system properties:
+
+  -Djet.jit.fast=
+  -Djet.jit.disable.resolution=
+  -Djet.gc.heaplimit=512m
+  -Djet.jit.fast=
+  -Djet.detect.sysinfo=
+
+Entry point type: exe
+
+Command line: "C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\JetPackII10005.exe" "-jethome" "C:\jet10.0-eval-amd64" "C:\users\moez\Mes documents\NetBeansProjects\PlaylistRadio6\Radio 6.jpn" "-JCPRJ=Z:\home\moez\NetBeansProjects\PlaylistRadio6\Radio 6.prj"
+
+OS:
+
+Windows 7 Service Pack 1 build 7601
+
+Process Modules:
+
+0x0000000000400000 - 0x0000000000816000     C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\JetPackII10005.exe
+0x00007f7c4fec0000 - 0x00007f7c5018e000     C:\windows\system32\ntdll.dll
+0x000000007b820000 - 0x000000007bc6f000     C:\windows\system32\KERNEL32.dll
+0x00007f7c4e6e0000 - 0x00007f7c4e948000     C:\windows\system32\advapi32.dll
+0x00007f7c4e350000 - 0x00007f7c4e6c5000     C:\windows\system32\user32.dll
+0x00007f7c4dfe0000 - 0x00007f7c4e327000     C:\windows\system32\gdi32.dll
+0x00007f7c4ddb0000 - 0x00007f7c4dfc8000     C:\windows\system32\version.dll
+0x00007f7c4cf20000 - 0x00007f7c4d1a3000     C:\windows\system32\winex11.drv
+0x0000000012c00000 - 0x0000000014284000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XKRN10005.DLL
+0x00007f7c4b060000 - 0x00007f7c4b30f000     C:\windows\system32\winmm.dll
+0x00007f7c4ad00000 - 0x00007f7c4b04e000     C:\windows\system32\ole32.dll
+0x00007f7c4aa50000 - 0x00007f7c4acd5000     C:\windows\system32\rpcrt4.dll
+0x00007f7c4a820000 - 0x00007f7c4aa44000     C:\windows\system32\msacm32.dll
+0x00007f7c4a610000 - 0x00007f7c4a818000     C:\windows\system32\psapi.dll
+0x0000000018100000 - 0x0000000018479000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XSWN10005.DLL
+0x0000000015b00000 - 0x0000000015cdb000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XSND10005.DLL
+0x0000000016800000 - 0x0000000017993000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XAWT10005.DLL
+0x0000000000820000 - 0x00000000010fb000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XMIS10005.DLL
+0x0000000001100000 - 0x0000000001eec000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XXML10005.DLL
+0x0000000001ef0000 - 0x0000000002218000     C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\WIZHELP10005.DLL
+0x0000000002220000 - 0x000000000261d000     C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\IMPORTRESOLVERLIB.DLL
+0x00007f7c4a3f0000 - 0x00007f7c4a605000     C:\windows\system32\pdh.dll
+0x00007f7c49d90000 - 0x00007f7c4a1d3000     C:\windows\system32\shell32.dll
+0x00007f7c49b00000 - 0x00007f7c49d77000     C:\windows\system32\shlwapi.dll
+0x00007f7c497f0000 - 0x00007f7c49aea000     C:\windows\system32\comctl32.dll
+0x00007f7c495c0000 - 0x00007f7c497ea000     C:\windows\system32\uxtheme.dll
+0x0000000079730000 - 0x0000000079801000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\msvcr100.dll
+0x0000000180000000 - 0x0000000180007000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\jetvm\jvm.dll
+0x0000000000360000 - 0x000000000037a000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\java.dll
+0x0000000003380000 - 0x0000000003396000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\zip.dll
+0x0000000003c70000 - 0x0000000003e05000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\awt.dll
+0x00007f7c09200000 - 0x00007f7c09550000     C:\windows\system32\oleaut32.dll
+0x00007f7c08fc0000 - 0x00007f7c091da000     C:\windows\system32\imm32.dll
+0x00007f7c08da0000 - 0x00007f7c08fb3000     C:\windows\system32\dwmapi.dll
+0x00007f7c08490000 - 0x00007f7c08808000     C:\windows\system32\opengl32.dll
+0x0000000004330000 - 0x000000000468f000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\xjitb_j10005.dll
+0x0000000004890000 - 0x000000000491c000     C:\jet10.0-eval-amd64\bin\xdwhelper.dll
+0x0000000010000000 - 0x0000000010006000     C:\jet10.0-eval-amd64\bin\getenv.dll
+0x00007f7c08b00000 - 0x00007f7c08d9d000     C:\windows\system32\msvcrt.dll
+0x0000000004b30000 - 0x0000000004b60000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\jpeg.dll
+0x0000000004b90000 - 0x0000000004bd7000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\fontmanager.dll
+0x0000000004d00000 - 0x0000000004d3f000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\splashscreen.dll
+0x0000000004d40000 - 0x0000000004d59000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\net.dll
+0x00007f7c00a30000 - 0x00007f7c00c66000     C:\windows\system32\ws2_32.dll
+0x0000000004d60000 - 0x0000000004d71000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\nio.dll
+0x0000000004d80000 - 0x0000000004dc1000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\t2k.dll
+0x00000000052d0000 - 0x00000000052fa000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\bin\dcpr.dll
+0x0000000016000000 - 0x00000000163ae000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XSEC10005.DLL
+0x0000000005300000 - 0x0000000005570000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XMNG10005.DLL
+0x0000000015f00000 - 0x0000000015f9e000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XMSC10005.DLL
+0x0000000015d00000 - 0x0000000015e32000     C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XJCE10005.DLL
+0x00007f7c00550000 - 0x00007f7c0076a000     C:\windows\system32\iphlpapi.dll
+
+JET-compiled Components:
+
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XKRN10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XSND10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XMIS10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XXML10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XAWT10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XSWN10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\WIZHELP10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\IMPORTRESOLVERLIB.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\develop\bin\JetPackII10005.exe exe, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\xjitb_j10005.dll dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XMNG10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XJCE10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XMSC10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+C:\jet10.0-eval-amd64\profile1.7.0_55\jre\jetrt\XSEC10005.DLL dll, version info: work installation, jet-1000-release (Wed Jul 23 16:08:23 NOVT 2014)
+Java stack trace is not available: not Java thread

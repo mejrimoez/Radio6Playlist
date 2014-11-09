@@ -5,7 +5,6 @@
  */
 package playlistradio6;
 
-import CrudPanels.ConfigurationServeur;
 import CrudPanels.Utilisateur;
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
@@ -15,13 +14,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -175,7 +171,8 @@ public class AuthentificationUI extends javax.swing.JFrame {
                         in = new FileInputStream("playlist.conf");
                         // chargement de la configuration
                         prop.load(in);
-                        if (prop.containsKey("music_folder")) {
+                        if (prop.containsKey("music_folder") && prop.containsKey("server_name")
+                                && prop.containsKey("user_name") && prop.containsKey("password")) {
                             // si le chemin de serveur est deja configure passer
                             GestionPlaylistUI fen = new GestionPlaylistUI();
                             fen.setLocationRelativeTo(null);
@@ -184,20 +181,23 @@ public class AuthentificationUI extends javax.swing.JFrame {
                             fen.validate();
                             fen.setVisible(true);
                         } else {
-                            // configurer le serveur
-                            ConfigurationServeur fen = new ConfigurationServeur();
+                            GestionPlaylistUI fen = new GestionPlaylistUI();
                             fen.setLocationRelativeTo(null);
                             fen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            fen.pack();
+                            fen.setSize(fen.getToolkit().getScreenSize());
+                            fen.validate();
                             fen.setVisible(true);
+                            fen.showServerConfig();
                         }
                     } else {
                         // configurer le serveur
-                        ConfigurationServeur fen = new ConfigurationServeur();
+                        GestionPlaylistUI fen = new GestionPlaylistUI();
                         fen.setLocationRelativeTo(null);
                         fen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        fen.pack();
+                        fen.setSize(fen.getToolkit().getScreenSize());
+                        fen.validate();
                         fen.setVisible(true);
+                        fen.showServerConfig();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
