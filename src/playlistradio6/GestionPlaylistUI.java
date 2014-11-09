@@ -1126,6 +1126,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             automaticPlaylistChoice.setTitle("Préférences de chansons");
             automaticPlaylistChoice.revalidate();
 
+            jPanel2.setMinimumSize(new java.awt.Dimension(200, 200));
+
             javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
             jPanel2.setLayout(jPanel2Layout);
             jPanel2Layout.setHorizontalGroup(
@@ -2662,9 +2664,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                             }
                         }
                         // download all files mp3 and place it into folder
-                        // TODO authentification for file download !!!!
-
-                        // TODO server authentication
+                        // TODO server authentification for file download !!!!
                         NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("domain", "user", "password");
 
                         for (Object c : playlist) {
