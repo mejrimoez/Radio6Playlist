@@ -41,6 +41,55 @@ public class CustomComboBoxGroup extends JPanel {
     private final Set<Genre> genresDispo;
     private final List<CustomComboBox<Integer>> listCombo;
 
+    public CustomComboBoxGroup() {
+        super();
+        // initialize numbers
+        allNumbersList = new Vector<>();
+        for (int i = 0; i <= 10; i++) {
+            allNumbersList.add(i);
+        }
+        // init the list of genres 
+        genresDispo = new TreeSet<>();
+        for (Object chans : GestionPlaylistUI.listChansons) {
+            genresDispo.addAll(((Chanson) chans).getGenres());
+        }
+        this.setLayout(new java.awt.GridLayout(genresDispo.size(), 2));
+        // init the list of jcombobox 
+        listCombo = new ArrayList<>();
+        for (Genre c : genresDispo) {
+            JLabel l = new JLabel(c.getNomGenre());
+            CustomComboBox<Integer> combo = new CustomComboBox<>();
+            this.add(l);
+            this.add(combo);
+            listCombo.add(combo);
+        }
+        this.revalidate();
+        // init the itemListeners pour la liste des combos 
+        for (CustomComboBox<Integer> cb : listCombo) {
+            cb.addItemListener(itemListener);
+        }
+
+        // test 
+        System.err.println(allNumbersList);
+        System.err.println(genresDispo);
+        System.out.println(toString());
+        
+        this.setVisible(true);
+    }
+
+    public void changerTaillePlaylist(int nouvTaille) {
+        // reinitialize the numbers 
+        allNumbersList.removeAllElements();
+        for (int i = 0; i <= nouvTaille; i++) {
+            allNumbersList.add(i);
+        }
+        // update comboboxes 
+        for (CustomComboBox<Integer> cb : listCombo) {
+            cb = new CustomComboBox<>(allNumbersList);
+        }
+
+    }
+    
     private final ItemListener itemListener = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
@@ -99,56 +148,17 @@ public class CustomComboBoxGroup extends JPanel {
             }
         }
     };
-
-    public CustomComboBoxGroup() {
-        super();
-
-        // initialize numbers
-        allNumbersList = new Vector<>();
-        for (int i = 0; i <= 10; i++) {
-            allNumbersList.add(i);
+    
+    
+    @Override
+    public String toString(){
+        String s = "";
+        List<Genre> genres = new ArrayList<>(genresDispo);
+        for (int i=0;i<listCombo.size();i++){
+            s += genres.get(i) + " ";
+            s += listCombo.get(i).getSelectedItem() + " \n";
         }
-        // init the list of genres 
-        genresDispo = new TreeSet<>();
-        for (Object chans : GestionPlaylistUI.listChansons) {
-            genresDispo.addAll(((Chanson) chans).getGenres());
-        }
-        this.setLayout(new java.awt.GridLayout(genresDispo.size(), 2));
-
-        // init the list of jcombobox 
-        listCombo = new ArrayList<>();
-        for (Genre c : genresDispo) {
-            JLabel l = new JLabel(c.getNomGenre());
-            CustomComboBox<Integer> combo = new CustomComboBox<>();
-            this.add(l);
-            this.add(combo);
-            listCombo.add(combo);
-        }
-        this.revalidate();
-        // init the itemListeners pour la liste des combos 
-        for (CustomComboBox<Integer> cb : listCombo) {
-            cb.addItemListener(itemListener);
-        }
-
-        // test 
-        System.err.println(allNumbersList);
-        System.err.println(genresDispo);
-        System.err.println(this);
-
-        this.setVisible(true);
-    }
-
-    public void changerTaillePlaylist(int nouvTaille) {
-        // reinitialize the numbers 
-        allNumbersList.removeAllElements();
-        for (int i = 0; i <= nouvTaille; i++) {
-            allNumbersList.add(i);
-        }
-        // update comboboxes 
-        for (CustomComboBox<Integer> cb : listCombo) {
-            cb = new CustomComboBox<>(allNumbersList);
-        }
-
-    }
+        return s;
+    } 
 
 }

@@ -15,7 +15,6 @@
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.user" value="b61de3d8801b15"/>
         </properties>-->
-    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://sql4.freemysqlhosting.net:3306/sql457399?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.password" value="jJ7!gU4!"/>

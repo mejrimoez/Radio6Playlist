@@ -5,24 +5,28 @@
             <url>src/playlistradio6/GestionPlaylistUI.java</url>
             <bookmark id="1">
                 <name/>
-                <line>2755</line>
+                <line>2741</line>
                 <key/>
             </bookmark>
             <bookmark id="3">
                 <name/>
-                <line>2818</line>
+                <line>2804</line>
                 <key/>
             </bookmark>
             <bookmark id="8">
                 <name/>
-                <line>3016</line>
+                <line>3017</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/moez/NetBeansProjects/PlaylistRadio6/src/playlistradio6/TestPanel.java</file>
+            <file>file:/home/moez/NetBeansProjects/PlaylistRadio6/src/playlistradio6/CustomComboBoxGroup.java</file>
             <file>file:/home/moez/NetBeansProjects/PlaylistRadio6/src/playlistradio6/GestionPlaylistUI.java</file>
+            <file>file:/home/moez/NetBeansProjects/PlaylistRadio6/src/CrudPanels/ConfigurationServeur.java</file>
+            <file>file:/home/moez/NetBeansProjects/PlaylistRadio6/src/playlistradio6/AuthentificationUI.java</file>
         </group>
     </open-files>
 </project-private>

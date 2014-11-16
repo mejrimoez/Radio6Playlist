@@ -5,8 +5,9 @@ import javax.swing.*;
 /**
  * Created by moez on 09/11/14.
  */
-public class TestPanel extends JFrame{
+public class TestPanel extends JDialog{
     public static void main(String[] args){
+        new GestionPlaylistUI();
         new TestPanel();
     }
 
@@ -14,7 +15,7 @@ public class TestPanel extends JFrame{
         super();
         this.add(new CustomComboBoxGroup());
         setLocationRelativeTo(null);
-        setSize(600,400);
+        setSize(200,200);
         setVisible(true);
     }
 

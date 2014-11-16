@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="3044619564">
+    <data-source source="LOCAL" name="MySQL - @cloud radio6" uuid="d0a1e2a6-4767-4a21-8984-90f46a29c500">
+      <driver-ref>mysql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://sql4.freemysqlhosting.net:3306/sql457399</jdbc-url>
+      <user-name>sql457399</user-name>
+      <user-password>dfc0dfe0df9ddf8bdfcddfffdf9edf8b</user-password>
+      <driver-properties>
+        <property name="zeroDateTimeBehavior" value="convertToNull" />
+        <property name="tinyInt1isBit" value="false" />
+      </driver-properties>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+

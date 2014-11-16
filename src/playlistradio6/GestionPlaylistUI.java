@@ -38,8 +38,6 @@ import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
@@ -58,18 +56,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.RowFilter;
 import javax.swing.SwingWorker;
@@ -94,6 +88,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         listeGenresModif = new ArrayList<>();
         listeFiltreGenres = new ArrayList<>();
         initComponents();
+        initConfiguration();
         currentChanson = null;
         ConfigurationServeur.isStartup = false;
     }
@@ -203,7 +198,6 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         credentialOk = new javax.swing.JButton();
         credentialCancel = new javax.swing.JButton();
         automaticPlaylistChoice = new javax.swing.JDialog();
-        jPanel2 = new CustomComboBoxGroup();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel30 = new javax.swing.JLabel();
@@ -217,6 +211,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableChansons = new javax.swing.JTable();
         modifInfoChans = new javax.swing.JButton();
+        musicPathTextField = new javax.swing.JTextField();
+        searchMusicButton = new javax.swing.JButton();
         contenu1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         chanteurCheckBox1 = new javax.swing.JCheckBox();
@@ -1124,20 +1120,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
 
             automaticPlaylistChoice.setLocationRelativeTo(null);
             automaticPlaylistChoice.setTitle("Préférences de chansons");
-            automaticPlaylistChoice.revalidate();
-
-            jPanel2.setMinimumSize(new java.awt.Dimension(200, 200));
-
-            javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-            jPanel2.setLayout(jPanel2Layout);
-            jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 367, Short.MAX_VALUE)
-            );
-            jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-            );
+            //automaticPlaylistChoice.revalidate();
 
             jButton3.setText("OK");
             jButton3.setPreferredSize(new java.awt.Dimension(76, 27));
@@ -1165,20 +1148,12 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
 
             jLabel31.setText("Il vous reste "+(CustomComboBox.taillePlaylist - CustomComboBox.somme)+" chansons");
 
+            automaticPlaylistChoice.add(new CustomComboBoxGroup());
+
             javax.swing.GroupLayout automaticPlaylistChoiceLayout = new javax.swing.GroupLayout(automaticPlaylistChoice.getContentPane());
             automaticPlaylistChoice.getContentPane().setLayout(automaticPlaylistChoiceLayout);
             automaticPlaylistChoiceLayout.setHorizontalGroup(
                 automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
-                    .addGap(25, 25, 25)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(30, 30, 30))
-                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
-                    .addGap(55, 55, 55)
-                    .addComponent(jLabel30)
-                    .addGap(28, 28, 28)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(73, Short.MAX_VALUE))
                 .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
                     .addGap(94, 94, 94)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1189,6 +1164,12 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel31)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(automaticPlaylistChoiceLayout.createSequentialGroup()
+                    .addGap(55, 55, 55)
+                    .addComponent(jLabel30)
+                    .addGap(28, 28, 28)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(73, Short.MAX_VALUE))
             );
             automaticPlaylistChoiceLayout.setVerticalGroup(
                 automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1197,9 +1178,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                     .addGroup(automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel30)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(16, 16, 16)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(15, 15, 15)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, Short.MAX_VALUE)
                     .addComponent(jLabel31)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(automaticPlaylistChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1238,7 +1217,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             titresSansInfos.setModel(model);
             jScrollPane2.setViewportView(titresSansInfos);
 
-            jLabel4.setFont(new java.awt.Font("DejaVu Sans", 3, 14)); // NOI18N
+            jLabel4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
             jLabel4.setText("Liste sans informations");
 
             infosChans.setText("Informations sur la chanson");
@@ -1311,6 +1290,20 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 }
             });
 
+            musicPathTextField.setText(musicFolder);
+            musicPathTextField.addCaretListener(new javax.swing.event.CaretListener() {
+                public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                    musicPathTextFieldCaretUpdate(evt);
+                }
+            });
+
+            searchMusicButton.setText("Parcourir");
+            searchMusicButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    searchMusicButtonActionPerformed(evt);
+                }
+            });
+
             javax.swing.GroupLayout contenuLayout = new javax.swing.GroupLayout(contenu);
             contenu.setLayout(contenuLayout);
             contenuLayout.setHorizontalGroup(
@@ -1319,10 +1312,17 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                     .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(contenuLayout.createSequentialGroup()
                             .addGap(64, 64, 64)
-                            .addComponent(jLabel4))
+                            .addComponent(jLabel4)
+                            .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(contenuLayout.createSequentialGroup()
                             .addGap(8, 8, 8)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                            .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(contenuLayout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addComponent(musicPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(searchMusicButton))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(10, 10, 10))
@@ -1338,17 +1338,21 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             contenuLayout.setVerticalGroup(
                 contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenuLayout.createSequentialGroup()
+                    .addContainerGap()
                     .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, contenuLayout.createSequentialGroup()
-                            .addContainerGap()
+                        .addGroup(contenuLayout.createSequentialGroup()
                             .addComponent(modifInfoChans)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, contenuLayout.createSequentialGroup()
-                            .addGap(44, 44, 44)
+                            .addComponent(jScrollPane1))
+                        .addGroup(contenuLayout.createSequentialGroup()
+                            .addGap(0, 66, Short.MAX_VALUE)
+                            .addGroup(contenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(musicPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(searchMusicButton))
+                            .addGap(30, 30, 30)
                             .addComponent(jLabel4)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(infosChans)
                     .addGap(50, 50, 50))
@@ -2024,9 +2028,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
+                .addComponent(contenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1318, Short.MAX_VALUE)
                 .addGap(8, 8, 8))
-            .addComponent(contenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 1325, Short.MAX_VALUE)
+            .addComponent(contenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 1326, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2153,7 +2157,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         int returnVal = fileOpen.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileOpen.getSelectedFile();
-            FileInputStream fis = null;
+            FileInputStream fis;
 
             contenu1.setVisible(true);
             contenu1.setEnabled(true);
@@ -2973,16 +2977,27 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     }//GEN-LAST:event_credentialOkActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        automaticPlaylistChoice.revalidate();
-        automaticPlaylistChoice.pack();
-        automaticPlaylistChoice.setLocationRelativeTo(null);
-        automaticPlaylistChoice.setVisible(true);
+
+        JFrame fr = new JFrame();
+
+        fr.setLayout(new GridLayout(2, 1));
+        JPanel p1 = new JPanel();
+        p1.add(jLabel30);
+        p1.add(jComboBox1);
+        fr.getContentPane().add(p1);
+
+        fr.getContentPane().add(new CustomComboBoxGroup());
+        fr.revalidate();
+        fr.pack();
+        fr.setLocationRelativeTo(null);
+        fr.setVisible(true);
+
+//        automaticPlaylistChoice.revalidate();
+//        automaticPlaylistChoice.pack();
+//        automaticPlaylistChoice.setLocationRelativeTo(null);
+//        automaticPlaylistChoice.setVisible(true);
 
     }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        automaticPlaylistChoice.setVisible(false);
-    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
@@ -2990,6 +3005,10 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             jLabel31.setText("Il vous reste " + (CustomComboBox.taillePlaylist - CustomComboBox.somme) + " chansons");
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        automaticPlaylistChoice.setVisible(false);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (rest != 0) {
@@ -3001,6 +3020,84 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
             // TODO et trouver le nombre de chansons nécessaire pour les ranger automatiquement
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void musicPathTextFieldCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_musicPathTextFieldCaretUpdate
+        // update music list 
+         // doing a parse in the song directory
+        loadFrame.setLocationRelativeTo(null);
+        loadFrame.setAlwaysOnTop(true);
+        loadFrame.requestFocus();
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        loadFrame.pack();
+        setVisible(true);
+        loadFrame.setVisible(true);
+        SwingWorker worker = new SwingWorker() {
+            @Override
+            protected String doInBackground() throws Exception {
+                // rechercher le dossier entré
+                FileSearch fileSearch = new FileSearch();
+
+                //try different directory and filename
+                fileSearch.searchDirectory(new File(musicFolder));
+
+                int count = fileSearch.getResult().size();
+                if (count == 0) {
+                    System.out.println("\nNo result found!");
+                    JOptionPane.showMessageDialog(null, "Ce dossier ne contient aucune chanson !", "Pas de Chansons", JOptionPane.INFORMATION_MESSAGE);
+                    // reinitialize cursor
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    return "echec";
+                } else {
+                    System.out.println("\nFound " + count + " result!\n");
+
+                    for (Chanson matched : fileSearch.getResult()) {
+                        System.out.println(" " + matched.toString());
+                    }
+                    listeFichiers.addAll(fileSearch.getResult());
+                }
+                return "success!";
+            }
+
+            @Override
+
+            protected void done() {
+                loadFrame.setVisible(false);
+
+                // refresh list of files
+                DefaultListModel<Chanson> model = new DefaultListModel<>();
+                for (Object s : listeFichiers) {
+                    // eliminer les chansons deja configurés
+                    if (!listChansons.contains((Chanson) s)) {
+                        model.addElement((Chanson) s);
+                    }
+                }
+                // refresh informations
+                refreshAllBase();
+                titresSansInfos.setModel(model);
+                // reinitialize cursor
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
+            }
+
+        };
+
+        worker.addPropertyChangeListener(null);
+        worker.execute();
+    }//GEN-LAST:event_musicPathTextFieldCaretUpdate
+
+    private void searchMusicButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMusicButtonActionPerformed
+        int returnVal = repertoireServeur.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = repertoireServeur.getSelectedFile();
+            try {
+                musicPath.setText(file.getPath());
+            } catch (Exception ex) {
+                System.out.println("problem accessing file" + file.getAbsolutePath());
+            }
+        } else {
+            System.out.println("File access cancelled by user.");
+        }
+    }//GEN-LAST:event_searchMusicButtonActionPerformed
 
     public void initSongs() {
         // initialize music list
@@ -3050,6 +3147,9 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
                 if (count == 0) {
                     System.out.println("\nNo result found!");
                     JOptionPane.showMessageDialog(null, "Ce dossier ne contient aucune chanson !", "Pas de Chansons", JOptionPane.INFORMATION_MESSAGE);
+                    // reinitialize cursor
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    return "echec";
                 } else {
                     System.out.println("\nFound " + count + " result!\n");
 
@@ -3120,6 +3220,31 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
         }
     }
 
+    private void initConfiguration() {
+        Properties prop = new Properties();
+        InputStream in = null;
+        try {
+            File f = new File("playlist.conf");
+            if (f.exists()) {
+                in = new FileInputStream("playlist.conf");
+                // chargement de la configuration
+                prop.load(in);
+                musicFolder = prop.containsKey("music_folder") ? prop.getProperty("music_folder") : "";
+                musicServer = prop.containsKey("server_name") ? prop.getProperty("server_name") : "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -3165,6 +3290,8 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private final List<Genre> listeFiltreGenres;
     private boolean editPlaylist = false;
     private Chanson currentChanson;
+
+    private String musicFolder, musicServer;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem AproposItem;
     private javax.swing.JMenuItem ConfigGenre;
@@ -3258,7 +3385,6 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -3296,6 +3422,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JButton modifThemeButton;
     private javax.swing.JDialog modifTitre;
     private javax.swing.JTextField musicPath;
+    private javax.swing.JTextField musicPathTextField;
     private javax.swing.JMenuItem newProjectItem;
     private javax.swing.JTextField nomChanson;
     private javax.swing.JTextField nomChanson1;
@@ -3321,6 +3448,7 @@ public class GestionPlaylistUI extends javax.swing.JFrame {
     private javax.swing.JPanel ratingPanel1;
     private javax.swing.JFileChooser repertoireServeur;
     private javax.swing.JMenuItem saveFileItem;
+    private javax.swing.JButton searchMusicButton;
     private javax.swing.JButton selectSongButton;
     private javax.swing.JDialog serverCredentialsDialog;
     private javax.swing.JComboBox symbole;
